@@ -1,16 +1,8 @@
 import express, { Application, NextFunction, Request, Response } from "express";
 import cors from "cors";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import mongoDB from "./configs/db";
-import HeadMaster from "./models/HeadMasters";
-import Teacher from "./models/Teachers";
-import Student from "./models/Students";
-import Parent from "./models/Parents";
-import SchoolWork from "./models/SchoolWorks";
-import Course from "./models/Courses";
-import Schedule from "./models/Schedule";
 import routes from "./routes/routes";
+import { errorHandler } from "./middlewares/errorHandler";
 
 class App {
     public app: Application;
@@ -19,6 +11,7 @@ class App {
         this.app = express();
         this.plugin();
         this.route();
+        this.errorHandler();
     }
 
     protected plugin = () => {
@@ -46,6 +39,9 @@ class App {
 
     protected route = () => {
         this.app.use("/api", routes);
+    };
+    protected errorHandler = () => {
+        this.app.use(errorHandler.errHandle);
     };
 }
 
