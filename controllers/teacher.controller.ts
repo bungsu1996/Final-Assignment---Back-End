@@ -8,11 +8,17 @@ class TeacherController {
   static async createTeacher(req: Request, res: Response, next: NextFunction) {
     const { email, password, fullname, birthDate, course, teachClass } =
       req.body;
-    const hashPass = bcrypt.genSaltSync(10);
-    const hashedPass = bcrypt.hashSync(password, hashPass);
-    const findCourse = await Courses.findById({ _id: course });
-    const findClass = await Class.findById({ _id: teachClass });
     try {
+      const hashPass = bcrypt.genSaltSync(10);
+      const hashedPass = bcrypt.hashSync(password, hashPass);
+      const findCourse = await Courses.findById({ _id: course });
+      if (!findCourse) {
+        throw { name: "NOT_FOUND_COURSE" };
+      }
+      const findClass = await Class.findById({ _id: teachClass });
+      if (!findClass) {
+        throw { name: "NOT_FOUND_CLASS" };
+      }
       const result = await Teacher.create({
         email: email.toLowerCase(),
         password: hashedPass,
@@ -37,8 +43,11 @@ class TeacherController {
   }
 
   static async findTeacher(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.body;
+    const { id } = req.params;
     try {
+      if (!id) {
+        throw { name: "NOT_FOUND_TEACHER" };
+      }
       const result = await Teacher.findById(id);
       res.status(200).json(result);
     } catch (error) {
@@ -49,11 +58,17 @@ class TeacherController {
   static async updateTeacher(req: Request, res: Response, next: NextFunction) {
     const { id, email, password, fullname, birthDate, course, teachClass } =
       req.body;
-    const hashPass = bcrypt.genSaltSync(10);
-    const hashedPass = bcrypt.hashSync(password, hashPass);
-    const findCourse = await Courses.findById({ _id: course });
-    const findClass = await Class.findById({ _id: teachClass });
     try {
+      const hashPass = bcrypt.genSaltSync(10);
+      const hashedPass = bcrypt.hashSync(password, hashPass);
+      const findCourse = await Courses.findById({ _id: course });
+      if (!findCourse) {
+        throw { name: "NOT_FOUND_COURSE" };
+      }
+      const findClass = await Class.findById({ _id: teachClass });
+      if (!findClass) {
+        throw { name: "NOT_FOUND_CLASS" };
+      }
       const result = await Teacher.findByIdAndUpdate(
         id,
         {
@@ -75,6 +90,9 @@ class TeacherController {
   static async deleteTeacher(req: Request, res: Response, next: NextFunction) {
     const { id } = req.body;
     try {
+      if (!id) {
+        throw { name: "NOT_FOUND_TEACHER" };
+      }
       const result = await Teacher.findByIdAndDelete(id);
       res.status(200).json(result);
     } catch (error) {
