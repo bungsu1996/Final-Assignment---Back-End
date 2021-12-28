@@ -6,7 +6,8 @@ const studentSchema = new Schema({
     password: { type: String, required: true },
     fullName: { type: String, required: true },
     birthDate: { type: Date, required: true },
-    class: { type: String, required: true },
+    class: { type: Schema.Types.ObjectId, ref: "class" },
+    score: [{ type: Schema.Types.ObjectId, ref: "score" }],
 });
 
 const Student: Model<IStudents> = model<IStudents>("student", studentSchema);

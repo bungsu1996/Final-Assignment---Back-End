@@ -6,7 +6,8 @@ const parentSchema = new Schema({
     password: { type: String, required: true },
     fullName: { type: String, required: true },
     birthDate: { type: Date, required: true },
-    child: { type: String, required: true },
+    student: { type: Schema.Types.ObjectId, ref: "student" },
+    class: { type: Schema.Types.ObjectId, ref: "class" },
 });
 
 const Parent: Model<IParents> = model<IParents>("parent", parentSchema);
