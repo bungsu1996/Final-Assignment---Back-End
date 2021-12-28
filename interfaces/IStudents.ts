@@ -6,7 +6,7 @@ interface IStudents {
     password: string;
     fullName: string;
     birthDate: string;
-    class: IClass;
+    classes: IClass;
     score: Array<IScore>;
 }
 
