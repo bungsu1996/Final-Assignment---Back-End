@@ -9,8 +9,8 @@ class TeacherRoutes {
   }
   protected teacherCRUD = () => {
     this.teacherRoute.post("/create", TeacherController.createTeacher);
-    this.teacherRoute.get("/teacher", TeacherController.findAllTeacher);
-    this.teacherRoute.post("/find-teacher", TeacherController.findTeacher);
+    this.teacherRoute.get("/", TeacherController.findAllTeacher);
+    this.teacherRoute.get("/:id", TeacherController.findTeacher);
     this.teacherRoute.put("/update-teacher", TeacherController.updateTeacher);
     this.teacherRoute.delete(
       "/delete-teacher",

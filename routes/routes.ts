@@ -3,6 +3,7 @@ import users from "../controllers/user.controller";
 import courseRoutes from "./course.routes";
 import scheduleRoutes from "./schedule.routes";
 import schoolworkRoutes from "./schoolwork.routes";
+import { studentRouter } from "./students.routes";
 import { teacherRouter } from "./teacher.routes";
 
 class Routes {
@@ -11,6 +12,7 @@ class Routes {
     this.router = Router();
     this.routes();
     this.teacherRoute();
+    this.studentRoute();
   }
   routes = () => {
     this.router.get("/", (req: Request, res: Response) => {
@@ -24,6 +26,9 @@ class Routes {
   };
   protected teacherRoute = () => {
     this.router.use("/teacher", teacherRouter);
+  };
+  protected studentRoute = () => {
+    this.router.use("/student", studentRouter);
   };
 }
 
