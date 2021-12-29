@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import users from "../controllers/user.controller";
 import courseRoutes from "./course.routes";
+import { parentRouter } from "./parents.routes";
 import scheduleRoutes from "./schedule.routes";
 import schoolworkRoutes from "./schoolwork.routes";
 import { studentRouter } from "./students.routes";
@@ -13,6 +14,7 @@ class Routes {
         this.routes();
         this.teacherRoute();
         this.studentRoute();
+        this.parentRoute();
     }
     routes = () => {
         this.router.get("/", (req: Request, res: Response) => {
@@ -29,6 +31,9 @@ class Routes {
     };
     protected studentRoute = () => {
         this.router.use("/student", studentRouter);
+    };
+    protected parentRoute = () => {
+        this.router.use("/parent", parentRouter);
     };
 }
 
