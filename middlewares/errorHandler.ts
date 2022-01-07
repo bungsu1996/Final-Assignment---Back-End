@@ -44,6 +44,10 @@ class errorHandler {
         code = 404;
         message = "Year Academic Data Not Found!";
         break;
+      case "NOT_FOUND_SCHEDULE":
+        code = 404;
+        message = "Schedule Data Not Found!";
+        break;
       default:
         code = 500;
         message = "Internal Server Error";
