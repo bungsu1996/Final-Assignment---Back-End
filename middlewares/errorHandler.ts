@@ -20,9 +20,17 @@ class errorHandler {
         code = 404;
         message = "Student Data Not Found!";
         break;
+      case "NOT_FOUND_PARENT":
+        code = 404;
+        message = "Parent Data Not Found!";
+        break;
       case "NOT_FOUND_TEACHER":
         code = 404;
         message = "Teacher Data Not Found!";
+        break;
+      case "NOT_FOUND_HOMEROOM":
+        code = 404;
+        message = "Homeroom Teacher Data Not Found!";
         break;
       case "NOT_FOUND_SCORE":
         code = 404;
@@ -31,6 +39,10 @@ class errorHandler {
       case "NOT_FOUND_COURSE":
         code = 404;
         message = "Course Data Not Found!";
+        break;
+      case "NOT_FOUND_YEAR":
+        code = 404;
+        message = "Year Academic Data Not Found!";
         break;
       default:
         code = 500;

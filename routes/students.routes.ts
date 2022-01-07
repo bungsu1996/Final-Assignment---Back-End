@@ -5,6 +5,7 @@ class StudentRoutes {
   public studentRoute: Router;
   constructor() {
     this.studentRoute = Router();
+    this.studentCRUD();
   }
   protected studentCRUD = () => {
     this.studentRoute.post("/create", StudentController.createStudent);
