@@ -4,6 +4,7 @@ import IClass from "../interfaces/IClass";
 const classSchema = new Schema(
     {
         className: { type: String, required: true },
+        yearAcademic: { type: Number, required: true },
         homeTeacher: { type: Schema.Types.ObjectId, ref: "teacher" },
         student: [{ type: Schema.Types.ObjectId, ref: "student" }],
         schedule: [{ type: Schema.Types.ObjectId, ref: "schedule" }],

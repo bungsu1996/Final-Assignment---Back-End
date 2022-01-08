@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import users from "../controllers/user.controller";
 import courseRoutes from "./course.routes";
+import { headmasterRouter } from "./headmaster.routes";
 import { parentRouter } from "./parents.routes";
 import scheduleRoutes from "./schedule.routes";
 import schoolworkRoutes from "./schoolwork.routes";
@@ -12,6 +13,7 @@ class Routes {
     constructor() {
         this.router = Router();
         this.routes();
+        this.headmasterRoute();
         this.teacherRoute();
         this.studentRoute();
         this.parentRoute();
@@ -25,6 +27,9 @@ class Routes {
         this.router.use("/schoolwork", schoolworkRoutes);
         this.router.use("/course", courseRoutes);
         this.router.use("/schedule", scheduleRoutes);
+    };
+    protected headmasterRoute = () => {
+        this.router.use("/headmaster", headmasterRouter);
     };
     protected teacherRoute = () => {
         this.router.use("/teacher", teacherRouter);
