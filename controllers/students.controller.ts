@@ -22,7 +22,7 @@ class StudentController {
                 email: email.toLowerCase(),
                 password: hashedPass,
                 fullName: fullName,
-                birthDate: new Date(birthDate),
+                birthDate: birthDate,
                 classes: findClass,
             });
             await Class.findByIdAndUpdate(findClass, {
@@ -30,6 +30,7 @@ class StudentController {
             });
             res.status(201).json({ result });
         } catch (error) {
+            console.log((error as Error).message);
             next(error);
         }
     }

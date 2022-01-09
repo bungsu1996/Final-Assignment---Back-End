@@ -33,6 +33,7 @@ class TeacherController {
             });
             res.status(201).json(result);
         } catch (error) {
+            console.log((error as Error).message);
             next(error);
         }
     }
