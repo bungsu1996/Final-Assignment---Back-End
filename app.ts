@@ -6,14 +6,12 @@ import { errorHandler } from "./middlewares/errorHandler";
 
 class App {
     public app: Application;
-
     constructor() {
         this.app = express();
         this.plugin();
         this.route();
         this.errorHandler();
     }
-
     protected plugin = () => {
         mongoDB.connect();
         this.app.use(cors());
@@ -36,7 +34,6 @@ class App {
             next();
         });
     };
-
     protected route = () => {
         this.app.use("/api", routes);
     };
@@ -46,8 +43,4 @@ class App {
 }
 
 const app = new App().app;
-const port = process.env.PORT || 3535;
-
-app.listen(port, () => {
-    console.log(`Server listening on ${port}`);
-});
+export default app;

@@ -80,8 +80,7 @@ class ClassConttroller {
   }
 
   static async updateClass(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.params;
-    const { className, yearAcademic, homeTeacher, student, schedule } =
+    const { id, className, yearAcademic, homeTeacher, student, schedule } =
       req.body;
     try {
       const foundClass = await Class.findById(id);
@@ -114,6 +113,18 @@ class ClassConttroller {
     } catch (error) {
       next(error);
     }
+  }
+
+  static async deleteClass(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    try {
+      const foundClass = await Class.findById({ _id: id });
+      if (!foundClass) {
+        throw { name: "NOT_FOUND_CLASS" };
+      }
+      const result = await Class.findByIdAndDelete(foundClass);
+      res.status(200).json(result);
+    } catch (error) {}
   }
 }
 

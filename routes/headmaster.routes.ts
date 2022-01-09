@@ -21,11 +21,11 @@ class headmasterRoutes {
         this.headmasterRoute.get("/teacher", TeacherController.findAllTeacher);
         this.headmasterRoute.get("/teacher/:id", TeacherController.findTeacher);
         this.headmasterRoute.put(
-            "/teacher/update",
+            "/teacher/:id",
             TeacherController.updateTeacher
         );
         this.headmasterRoute.delete(
-            "/teacher/teacher",
+            "/teacher/:id",
             TeacherController.deleteTeacher
         );
     };
@@ -37,11 +37,11 @@ class headmasterRoutes {
         this.headmasterRoute.get("/student", StudentController.findAllStudent);
         this.headmasterRoute.get("/student/:id", StudentController.findStudent);
         this.headmasterRoute.put(
-            "/student/update",
+            "/student/:id",
             StudentController.updateStudent
         );
         this.headmasterRoute.delete(
-            "/student/delete",
+            "/student/:id",
             StudentController.deleteStudent
         );
     };
@@ -52,12 +52,9 @@ class headmasterRoutes {
         );
         this.headmasterRoute.get("/parent", ParentController.findAllParent);
         this.headmasterRoute.get("/parent/:id", ParentController.findParent);
-        this.headmasterRoute.put(
-            "/parent/update",
-            ParentController.updateParent
-        );
+        this.headmasterRoute.put("/parent/:id", ParentController.updateParent);
         this.headmasterRoute.delete(
-            "/parent/delete",
+            "/parent/:id",
             ParentController.deleteParent
         );
     };
@@ -73,10 +70,8 @@ class headmasterRoutes {
         );
         this.headmasterRoute.get("/class", ClassConttroller.findAllClass);
         this.headmasterRoute.get("/class/:id", ClassConttroller.findClass);
-        this.headmasterRoute.put(
-            "/class/update/:id",
-            ClassConttroller.updateClass
-        );
+        this.headmasterRoute.put("/class/update", ClassConttroller.updateClass);
+        this.headmasterRoute.delete("/class/:id", ClassConttroller.deleteClass);
     };
 }
 

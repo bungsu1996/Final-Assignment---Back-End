@@ -6,7 +6,7 @@ import Student from "../models/Students";
 
 class ParentController {
     static async createParent(req: Request, res: Response, next: NextFunction) {
-        const { email, password, fullname, birthDate, student, classes } =
+        const { email, password, fullName, birthDate, student, classes } =
             req.body;
         try {
             const hashPass = bcrypt.genSaltSync(10);
@@ -22,8 +22,8 @@ class ParentController {
             const result = await Parent.create({
                 email: email.toLowerCase(),
                 password: hashedPass,
-                fullname: fullname,
-                birthDate: birthDate,
+                fullName: fullName,
+                birthDate: new Date(birthDate),
                 student: findStudent,
                 classes: findClass,
             });
@@ -60,7 +60,8 @@ class ParentController {
     }
 
     static async updateParent(req: Request, res: Response, next: NextFunction) {
-        const { id, email, password, fullname, birthDate, student, classes } =
+        const { id } = req.params;
+        const { email, password, fullName, birthDate, student, classes } =
             req.body;
         try {
             if (!id) {
@@ -81,8 +82,8 @@ class ParentController {
                 {
                     email: email.toLowerCase(),
                     password: hashedPass,
-                    fullname: fullname,
-                    birthData: birthDate,
+                    fullName: fullName,
+                    birthData: new Date(birthDate),
                     student: findStudent,
                     classes: findClass,
                 },
@@ -95,7 +96,7 @@ class ParentController {
     }
 
     static async deleteParent(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.body;
+        const { id } = req.params;
         try {
             if (!id) {
                 throw { name: "NOT_FOUND_PARENT" };

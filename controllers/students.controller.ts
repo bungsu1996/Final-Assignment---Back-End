@@ -10,25 +10,25 @@ class StudentController {
         res: Response,
         next: NextFunction
     ) {
-        const { email, password, fullname, birthDate, classes } = req.body;
+        const { email, password, fullName, birthDate, classes } = req.body;
         try {
-            const hashPass = bcrypt.genSaltSync(10);
-            const hashedPass = bcrypt.hashSync(password, hashPass);
             const findClass = await Class.findById({ _id: classes });
             if (!findClass) {
                 throw { name: "NOT_FOUND_CLASS" };
             }
+            const hashPass = bcrypt.genSaltSync(10);
+            const hashedPass = bcrypt.hashSync(password, hashPass);
             const result = await Student.create({
                 email: email.toLowerCase(),
                 password: hashedPass,
-                fullname: fullname,
-                birthDate: birthDate,
+                fullName: fullName,
+                birthDate: new Date(birthDate),
                 classes: findClass,
             });
-            await Class.findByIdAndUpdate(classes, {
+            await Class.findByIdAndUpdate(findClass, {
                 $push: { student: result._id },
             });
-            res.status(201).json(result);
+            res.status(201).json({ result });
         } catch (error) {
             next(error);
         }
@@ -65,7 +65,8 @@ class StudentController {
         res: Response,
         next: NextFunction
     ) {
-        const { id, email, password, fullname, birthDate, classes, score } =
+        const { id } = req.params;
+        const { email, password, fullName, birthDate, classes, score } =
             req.body;
         try {
             const hashPass = bcrypt.genSaltSync(10);
@@ -83,7 +84,7 @@ class StudentController {
                 {
                     email: email.toLowerCase(),
                     password: hashedPass,
-                    fullname: fullname,
+                    fullName: fullName,
                     birthData: birthDate,
                     classes: findClass,
                     score: score,
@@ -101,7 +102,7 @@ class StudentController {
         res: Response,
         next: NextFunction
     ) {
-        const { id } = req.body;
+        const { id } = req.params;
         try {
             if (!id) {
                 throw { name: "NOT_FOUND_STUDENT" };
