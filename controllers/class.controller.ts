@@ -80,7 +80,8 @@ class ClassConttroller {
   }
 
   static async updateClass(req: Request, res: Response, next: NextFunction) {
-    const { id, className, yearAcademic, homeTeacher, student, schedule } =
+    const { id } = req.params;
+    const { className, yearAcademic, homeTeacher, student, schedule } =
       req.body;
     try {
       const foundClass = await Class.findById(id);
