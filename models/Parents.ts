@@ -2,7 +2,7 @@ import { model, Model, Schema } from "mongoose";
 import IParents from "../interfaces/IParents";
 
 const parentSchema = new Schema({
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true, default: '1234abcd' },
     fullName: { type: String, required: true },
     birthDate: { type: Date, required: true },

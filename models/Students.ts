@@ -2,8 +2,8 @@ import { model, Model, Schema } from "mongoose";
 import IStudents from "../interfaces/IStudents";
 
 const studentSchema = new Schema({
-    email: { type: String, required: true },
-    password: { type: String, required: true, default: '1234abcd' },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, default: '1234abcd' },
     fullName: { type: String, required: true },
     birthDate: { type: Date, required: true },
     classes: { type: Schema.Types.ObjectId, ref: "class" },

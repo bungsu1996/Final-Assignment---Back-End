@@ -6,7 +6,7 @@ import Class from "../models/Class";
 
 class TeacherController {
   static async createTeacher(req: Request, res: Response, next: NextFunction) {
-    const { email, password, fullname, birthDate, course, teachClass } =
+    const { email, password, fullName, birthDate, course, teachClass } =
       req.body;
     try {
       const hashPass = bcrypt.genSaltSync(10);
@@ -22,8 +22,8 @@ class TeacherController {
       const result = await Teacher.create({
         email: email.toLowerCase(),
         password: hashedPass,
-        fullname: fullname,
-        birthDate: birthDate,
+        fullName: fullName,
+        birthDate: new Date(birthDate),
         course: findCourse,
         teachClass: findClass,
       });
@@ -56,7 +56,8 @@ class TeacherController {
   }
 
   static async updateTeacher(req: Request, res: Response, next: NextFunction) {
-    const { id, email, password, fullname, birthDate, course, teachClass } =
+    const { id } = req.params;
+    const { email, password, fullName, birthDate, course, teachClass } =
       req.body;
     try {
       const hashPass = bcrypt.genSaltSync(10);
@@ -74,8 +75,8 @@ class TeacherController {
         {
           email: email.toLowerCase(),
           password: hashedPass,
-          fullname: fullname,
-          birthData: birthDate,
+          fullName: fullName,
+          birthData: new Date(birthDate),
           course: findCourse,
           teachClass: findClass,
         },
@@ -88,7 +89,7 @@ class TeacherController {
   }
 
   static async deleteTeacher(req: Request, res: Response, next: NextFunction) {
-    const { id } = req.body;
+    const { id } = req.params;
     try {
       if (!id) {
         throw { name: "NOT_FOUND_TEACHER" };
