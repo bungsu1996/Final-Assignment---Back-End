@@ -1,5 +1,6 @@
 import { Router } from "express";
 import ClassConttroller from "../controllers/class.controller";
+import coursesController from "../controllers/course.controller";
 import ParentController from "../controllers/parents.controller";
 import StudentController from "../controllers/students.controller";
 import TeacherController from "../controllers/teacher.controller";
@@ -9,16 +10,11 @@ class headmasterRoutes {
     public headmasterRoute: Router;
     constructor() {
         this.headmasterRoute = Router();
-        this.pluginHeadmaster();
         this.headmasterControlTeacher();
         this.headmasterControlStudent();
         this.headmasterControlParent();
         this.headmasterControlClasses();
     }
-    protected pluginHeadmaster = () => {
-        this.headmasterRoute.use(authJwt.verifyToken);
-        this.headmasterRoute.use(authJwt.isHeadMaster);
-    };
     protected headmasterControlTeacher = () => {
         this.headmasterRoute.post(
             "/teacher/create",
@@ -33,6 +29,10 @@ class headmasterRoutes {
         this.headmasterRoute.delete(
             "/teacher/:id",
             TeacherController.deleteTeacher
+        );
+        this.headmasterRoute.put(
+            "/teacher/:id",
+            TeacherController.setSpesificCourse
         );
     };
     protected headmasterControlStudent = () => {
@@ -76,8 +76,16 @@ class headmasterRoutes {
         );
         this.headmasterRoute.get("/class", ClassConttroller.findAllClass);
         this.headmasterRoute.get("/class/:id", ClassConttroller.findClass);
-        this.headmasterRoute.put("/class/update", ClassConttroller.updateClass);
+        this.headmasterRoute.put("/class/:id", ClassConttroller.updateClass);
         this.headmasterRoute.delete("/class/:id", ClassConttroller.deleteClass);
+    };
+    protected headmasterControlCourse = () => {
+        this.headmasterRoute.post(
+            "/course/create",
+            coursesController.createCourse
+        );
+        this.headmasterRoute.get("/course", coursesController.findAllCourse);
+        this.headmasterRoute.get("/course/:id", coursesController.findCourse);
     };
 }
 

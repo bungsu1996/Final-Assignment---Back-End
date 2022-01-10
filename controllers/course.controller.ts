@@ -1,8 +1,8 @@
-import { Response, Request } from "express";
+import { Response, Request, NextFunction } from "express";
 import Course from "../models/Courses";
 
-class courses {
-    static async create(req: Request, res: Response) {
+class coursesController {
+    static async createCourse(req: Request, res: Response, next: NextFunction) {
         try {
             const { course } = req.body;
             const result = await Course.create({
@@ -11,17 +11,36 @@ class courses {
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
+            next(error);
         }
     }
 
-    static async getList(req: Request, res: Response) {
+    static async findAllCourse(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
         try {
             const result = await Course.find();
             res.status(200).json(result);
         } catch (error) {
             console.log(error);
+            next(error);
+        }
+    }
+
+    static async findCourse(req: Request, res: Response, next: NextFunction) {
+        const { id } = req.params;
+        try {
+            if (!id) {
+                throw { name: "NOT_FOUND_COURSE" };
+            }
+            const result = await Course.findById(id);
+            res.status(200).json(result);
+        } catch (error) {
+            next(error);
         }
     }
 }
 
-export default courses;
+export default coursesController;

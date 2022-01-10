@@ -119,6 +119,31 @@ class TeacherController {
             next(error);
         }
     }
+
+    static async setSpesificCourse(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        const { id } = req.params;
+        const { course } = req.body;
+        try {
+            const foundTeacher = await Teacher.findById(id);
+            if (!foundTeacher) {
+                throw { name: "NOT_FOUND_TEACHER" };
+            }
+            const result = await Teacher.findByIdAndUpdate(
+                foundTeacher,
+                {
+                    course: course,
+                },
+                { new: true }
+            );
+            res.status(200).json(result);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export default TeacherController;
