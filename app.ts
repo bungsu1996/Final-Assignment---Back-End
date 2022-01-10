@@ -1,8 +1,10 @@
 import express, { Application, NextFunction, Request, Response } from "express";
+import bcrypt from "bcryptjs";
 import cors from "cors";
 import mongoDB from "./configs/db";
 import routes from "./routes/routes";
 import { errorHandler } from "./middlewares/errorHandler";
+import HeadMaster from "./models/HeadMasters";
 
 class App {
     public app: Application;
@@ -36,6 +38,24 @@ class App {
     };
     protected route = () => {
         this.app.use("/api", routes);
+        this.app.post(
+            "/headmaster/create",
+            async (req: Request, res: Response) => {
+                const { email, fullName, birthDate } = req.body;
+                const word = fullName.split(" ");
+                const num = birthDate.replace(/-/g, "");
+                const password = word[0].toLowerCase() + num;
+                const hashPass = bcrypt.genSaltSync(10);
+                const hashedPass = bcrypt.hashSync(password, hashPass);
+                const result = await HeadMaster.create({
+                    email: email.toLowerCase(),
+                    password: hashedPass,
+                    fullName,
+                    birthDate: birthDate,
+                });
+                res.status(200).json(result);
+            }
+        );
     };
     protected errorHandler = () => {
         this.app.use(errorHandler.errHandle);

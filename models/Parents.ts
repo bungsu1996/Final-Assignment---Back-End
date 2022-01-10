@@ -5,7 +5,7 @@ const parentSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, default: "1234abcd" },
     fullName: { type: String, required: true },
-    birthDate: { type: Date, required: true },
+    birthDate: { type: String, required: true },
     student: { type: Schema.Types.ObjectId, ref: "student" },
     class: { type: Schema.Types.ObjectId, ref: "class" },
 });

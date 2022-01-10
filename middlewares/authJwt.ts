@@ -38,7 +38,8 @@ const isHeadMaster = async (
     next: NextFunction
 ) => {
     const { userId } = req;
-    const result = await HeadMaster.findById(userId!.id);
+    console.log(userId);
+    const result = await HeadMaster.findById(userId?.id);
     if (!result) {
         res.status(401).json({ message: "Require HeadMaster Role!" });
         return;
@@ -49,7 +50,7 @@ const isHeadMaster = async (
 
 const isTeacher = async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req;
-    const result = await Teacher.findById(userId!.id);
+    const result = await Teacher.findById(userId?.id);
     if (!result) {
         res.status(401).json({ message: "User Not Found!" });
         return;

@@ -3,9 +3,9 @@ import ITeachers from "../interfaces/ITeachers";
 
 const teacherSchema = new Schema({
     email: { type: String, required: true, unique: true },
-    password: { type: String, default: '1234abcd'},
+    password: { type: String, default: "1234abcd" },
     fullName: { type: String, required: true },
-    birthDate: { type: Date, required: true },
+    birthDate: { type: String, required: true },
     course: { type: Schema.Types.ObjectId, ref: "course" },
     teachClass: [{ type: Schema.Types.ObjectId, ref: "class" }],
 });

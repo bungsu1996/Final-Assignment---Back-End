@@ -6,9 +6,11 @@ import Student from "../models/Students";
 
 class ParentController {
     static async createParent(req: Request, res: Response, next: NextFunction) {
-        const { email, password, fullName, birthDate, student, classes } =
-            req.body;
+        const { email, fullName, birthDate, student, classes } = req.body;
         try {
+            const word = fullName.split(" ");
+            const num = birthDate.replace(/-/g, "");
+            const password = word[0].toLowerCase() + num;
             const hashPass = bcrypt.genSaltSync(10);
             const hashedPass = bcrypt.hashSync(password, hashPass);
             const findStudent = await Student.findById({ _id: student });
@@ -23,7 +25,7 @@ class ParentController {
                 email: email.toLowerCase(),
                 password: hashedPass,
                 fullName: fullName,
-                birthDate: new Date(birthDate),
+                birthDate: birthDate,
                 student: findStudent,
                 classes: findClass,
             });

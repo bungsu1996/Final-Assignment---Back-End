@@ -3,16 +3,22 @@ import ClassConttroller from "../controllers/class.controller";
 import ParentController from "../controllers/parents.controller";
 import StudentController from "../controllers/students.controller";
 import TeacherController from "../controllers/teacher.controller";
+import authJwt from "../middlewares/authJwt";
 
 class headmasterRoutes {
     public headmasterRoute: Router;
     constructor() {
         this.headmasterRoute = Router();
+        this.pluginHeadmaster();
         this.headmasterControlTeacher();
         this.headmasterControlStudent();
         this.headmasterControlParent();
         this.headmasterControlClasses();
     }
+    protected pluginHeadmaster = () => {
+        this.headmasterRoute.use(authJwt.verifyToken);
+        this.headmasterRoute.use(authJwt.isHeadMaster);
+    };
     protected headmasterControlTeacher = () => {
         this.headmasterRoute.post(
             "/teacher/create",

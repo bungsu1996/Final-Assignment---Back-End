@@ -10,9 +10,11 @@ class TeacherController {
         res: Response,
         next: NextFunction
     ) {
-        const { email, password, fullName, birthDate, course, teachClass } =
-            req.body;
+        const { email, fullName, birthDate, course, teachClass } = req.body;
         try {
+            const word = fullName.split(" ");
+            const num = birthDate.replace(/-/g, "");
+            const password = word[0].toLowerCase() + num;
             const hashPass = bcrypt.genSaltSync(10);
             const hashedPass = bcrypt.hashSync(password, hashPass);
             const findCourse = await Courses.findById({ _id: course });
@@ -27,7 +29,7 @@ class TeacherController {
                 email: email.toLowerCase(),
                 password: hashedPass,
                 fullName: fullName,
-                birthDate: new Date(birthDate),
+                birthDate: birthDate,
                 course: findCourse,
                 teachClass: findClass,
             });

@@ -10,8 +10,12 @@ class StudentController {
         res: Response,
         next: NextFunction
     ) {
-        const { email, password, fullName, birthDate, classes } = req.body;
+        const { email, fullName, birthDate, classes } = req.body;
         try {
+            const word = fullName.split(" ");
+            const num = birthDate.replace(/-/g, "");
+            const password = word[0].toLowerCase() + num;
+            console.log(password);
             const findClass = await Class.findById({ _id: classes });
             if (!findClass) {
                 throw { name: "NOT_FOUND_CLASS" };

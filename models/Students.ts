@@ -5,7 +5,7 @@ const studentSchema = new Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, default: "1234abcd" },
     fullName: { type: String, required: true },
-    birthDate: { type: Date, required: true },
+    birthDate: { type: String, required: true },
     classes: { type: Schema.Types.ObjectId, ref: "class" },
     score: [{ type: Schema.Types.ObjectId, ref: "score" }],
 });

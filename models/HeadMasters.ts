@@ -5,7 +5,7 @@ const headMasterSchema = new Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     fullName: { type: String, required: true },
-    birthDate: { type: Date, required: true },
+    birthDate: { type: String, required: true },
 });
 
 const HeadMaster: Model<IHeadMasters> = model<IHeadMasters>(
