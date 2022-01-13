@@ -5,8 +5,9 @@ interface IScore {
   nameWork: ISchoolWorks;
   course: ICourses;
   dailyScore: number;
-  testScore: Number;
-  finalScore: Number;
+  midtest: Number;
+  finaltest: Number;
+  resultScore: Number;
 }
 
 export default IScore;

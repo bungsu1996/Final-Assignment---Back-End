@@ -5,9 +5,10 @@ const scoreSchema = new Schema(
   {
     nameWork: { type: Schema.Types.ObjectId, ref: "schoolwork" },
     course: { type: Schema.Types.ObjectId, ref: "course" },
-    dailyScore: { type: Number, required: true },
-    testScore: { type: Number, required: true },
-    finalScore: { type: Number, required: true },
+    dailyScore: { type: Number, required: true, default: 0 },
+    midtest: { type: Number, required: true, default: 0 },
+    finaltest: { type: Number, required: true, default: 0 },
+    resultScore: { type: Number, required: true, default: 0 },
   },
   {
     timestamps: true,

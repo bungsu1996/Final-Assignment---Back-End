@@ -6,6 +6,8 @@ const parentSchema = new Schema({
     password: { type: String, required: true, default: "1234abcd" },
     fullName: { type: String, required: true },
     birthDate: { type: String, required: true },
+    role: { type: String, default: 'parent' },
+    status: { type: String, default: 'active' },
     student: { type: Schema.Types.ObjectId, ref: "student" },
     class: { type: Schema.Types.ObjectId, ref: "class" },
 });

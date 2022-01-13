@@ -8,8 +8,8 @@ class scheduleRoutes {
         this.scheduleroutes();
     }
     scheduleroutes = () => {
-        this.scheduleRoutes.get("/", schedules.getList);
-        this.scheduleRoutes.post("/create", schedules.create);
+        this.scheduleRoutes.get("/", schedules.listSchedule);
+        this.scheduleRoutes.post("/create", schedules.createSchedule);
     };
 }
 
