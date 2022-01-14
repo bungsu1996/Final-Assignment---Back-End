@@ -2,7 +2,7 @@ import IClass from "./IClass";
 import ICourses from "./ICourses";
 
 interface ITeachers {
-    nip: Number;
+    nip: string;
     email: string;
     password: string;
     fullName: string;

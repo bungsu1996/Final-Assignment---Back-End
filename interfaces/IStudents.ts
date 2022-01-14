@@ -2,7 +2,7 @@ import IClass from "./IClass";
 import IScore from "./IScore";
 
 interface IStudents {
-    nis: Number;
+    nis: string;
     email: string;
     password: string;
     fullName: string;
