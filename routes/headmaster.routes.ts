@@ -52,11 +52,16 @@ class headmasterRoutes {
   };
   protected headmasterControlClasses = () => {
     this.headmasterRoute.post("/class/create", ClassConttroller.createClass);
+    this.headmasterRoute.put(
+      "/class/set-hometeach",
+      ClassConttroller.setHomeroom
+    );
     this.headmasterRoute.get("/class/score/:id", ClassConttroller.scorebyClass);
     this.headmasterRoute.get("/class/year", ClassConttroller.classFilterByYear);
     this.headmasterRoute.get("/class", ClassConttroller.findAllClass);
     this.headmasterRoute.get("/class/:id", ClassConttroller.findClass);
     this.headmasterRoute.put("/class/:id", ClassConttroller.updateClass);
+    this.headmasterRoute.put("/class/change", ClassConttroller.changeClass);
   };
   protected headmasterControlCourse = () => {
     this.headmasterRoute.post("/course/create", coursesController.createCourse);

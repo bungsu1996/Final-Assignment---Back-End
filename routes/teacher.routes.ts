@@ -9,8 +9,8 @@ class TeacherRoutes {
     this.teacherControlScore();
   }
   protected teacherControlScore = () => {
-    this.teacherRoute.post('/score/create', scoreController.createScore);
-    
+    this.teacherRoute.post("/score/create", scoreController.createScore);
+    this.teacherRoute.post("/score/set-score", scoreController.createTestScore);
   };
 }
 

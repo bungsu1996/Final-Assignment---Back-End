@@ -6,18 +6,38 @@ import Teacher from "../models/Teachers";
 
 class ClassConttroller {
   static async createClass(req: Request, res: Response, next: NextFunction) {
-    const { className, yearAcademic, homeTeacher } = req.body;
+    const { className, yearAcademic, semester } = req.body;
     try {
-      const foundHomeroom = await Teacher.findById(homeTeacher);
-      if (!foundHomeroom) {
-        throw { name: "NOT_FOUND_HOMEROOM" };
-      }
       const result = await Class.create({
         className: className,
         yearAcademic: yearAcademic,
-        homeTeacher: foundHomeroom,
+        semester: semester,
       });
       res.status(201).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async setHomeroom(req: Request, res: Response, next: NextFunction) {
+    const { classes, homeroom } = req.body;
+    try {
+      const foundTeach = await Teacher.findById({ _id: homeroom });
+      if (!foundTeach) {
+        throw { name: "NOT_FOUND_TEACHER" };
+      }
+      const foundClasses = await Class.findById({ _id: classes });
+      if (!foundClasses) {
+        throw { name: "NOT_FOUND_CLASS" };
+      }
+      const result = await Class.findByIdAndUpdate(
+        foundClasses,
+        {
+          homeTeacher: foundTeach,
+        },
+        { new: true }
+      );
+      res.status(200).json(result);
     } catch (error) {
       next(error);
     }
@@ -89,8 +109,7 @@ class ClassConttroller {
 
   static async updateClass(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { className, yearAcademic, homeTeacher, schedule } =
-      req.body;
+    const { className, yearAcademic, homeTeacher, schedule } = req.body;
     try {
       const foundClass = await Class.findById(id);
       if (!foundClass) {
@@ -106,7 +125,8 @@ class ClassConttroller {
       if (!foundSchedule) {
         throw { name: "NOT_FOUND_SCHEDULE" };
       }
-      const result = await Class.findByIdAndUpdate(foundClass,
+      const result = await Class.findByIdAndUpdate(
+        foundClass,
         {
           className: className,
           yearAcademic: yearAcademic,
@@ -131,6 +151,41 @@ class ClassConttroller {
       const result = await Class.findByIdAndDelete(foundClass);
       res.status(200).json(result);
     } catch (error) {}
+  }
+
+  static async changeClass(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { student, className } = req.body;
+    console.log(student)
+    console.log(className)
+    try {
+      const foundStudent = await Student.findById(student);
+      console.log(foundStudent)
+      if (!foundStudent) {
+        throw { name: "NOT_FOUND_STUDENT" };
+      }
+      
+      const foundClass = await Class.findById(className);
+      console.log(foundClass)
+      if (!foundClass) {
+        throw { name: "NOT_FOUND_CLASS" };
+      }
+    
+      const result = await Student.findByIdAndUpdate(
+        student,
+        {
+          classes: foundClass,
+        },
+        { new: true }
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).name);
+      next(error);
+    }
   }
 }
 

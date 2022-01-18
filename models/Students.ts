@@ -2,7 +2,7 @@ import { model, Model, Schema } from "mongoose";
 import IStudents from "../interfaces/IStudents";
 
 const studentSchema = new Schema({
-    nis: { type: String, required: true, unique: true, default: 0 },
+    nis: { type: String, unique: true, default: 0 },
     email: { type: String, required: true, unique: true },
     password: { type: String, default: "1234abcd" },
     fullName: { type: String, required: true },

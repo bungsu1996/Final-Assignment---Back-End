@@ -6,6 +6,7 @@ interface IClass {
     className: string;
     yearAcademic: number;
     homeTeacher: ITeachers;
+    semester: String;
     student: Array<IStudents>;
     schedule: Array<ISchedule>;
 }
