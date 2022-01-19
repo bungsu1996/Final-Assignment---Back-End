@@ -11,6 +11,7 @@ class TeacherRoutes {
   protected teacherControlScore = () => {
     this.teacherRoute.post("/score/create", scoreController.createScore);
     this.teacherRoute.post("/score/set-score", scoreController.createTestScore);
+    this.teacherRoute.get("/score/search-by", TeacherController.searchManageScore);
   };
 }
 

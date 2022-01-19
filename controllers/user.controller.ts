@@ -104,8 +104,10 @@ class users {
       const token = jwt.sign(
         {
           id: result!.id,
+          nip: result!.nip,
           email: result!.email,
           fullName: result!.fullName,
+          role: result!.role,
         },
         "this is a secret key token",
         {

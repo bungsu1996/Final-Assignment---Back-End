@@ -7,6 +7,7 @@ const studentSchema = new Schema({
     password: { type: String, default: "1234abcd" },
     fullName: { type: String, required: true },
     birthDate: { type: String, required: true },
+    yearAcademic: { type: String, default: "2021/2022" },
     role: { type: String, default: "student" },
     status: { type: String, default: "active" },
     classes: { type: Schema.Types.ObjectId, ref: "class" },

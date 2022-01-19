@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import Class from "../models/Class";
 import Course from "../models/Courses";
 import Score from "../models/Score";
 import Student from "../models/Students";
@@ -77,11 +78,6 @@ class scoreController {
     }
   }
 
-  static async listDailyScore(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {}
 }
 
 export default scoreController;

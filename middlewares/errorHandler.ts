@@ -56,6 +56,14 @@ class errorHandler {
         code = 404;
         message = "Schedule Data Not Found!";
         break;
+      case "NOT_FOUND_SEMESTER":
+        code = 404;
+        message = "Semester Data Not Found!";
+        break;
+      case "NOT_FOUND_SEARCH":
+        code = 404;
+        message = "Data Searching Not Found!";
+        break;
       case "NOT_FOUND":
         code = 404;
         message = "FORM NULL! Fill The Form Because That REQUIRED TO FILL!";

@@ -6,10 +6,10 @@ import Teacher from "../models/Teachers";
 
 class ClassConttroller {
   static async createClass(req: Request, res: Response, next: NextFunction) {
-    const { className, yearAcademic, semester } = req.body;
+    const { classBefore, yearAcademic, semester } = req.body;
     try {
       const result = await Class.create({
-        className: className,
+        classBefore: classBefore,
         yearAcademic: yearAcademic,
         semester: semester,
       });
@@ -46,13 +46,21 @@ class ClassConttroller {
   static async scorebyClass(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
-      const foundClass = await Class.findById(id);
-      if (!foundClass) {
+      const foundClassAfter = await Class.findById(id);
+      if (!foundClassAfter) {
         throw { name: "NOT_FOUND_CLASS" };
       }
-      const result = await Class.findById(foundClass)
-        .select("student")
-        .populate({ path: "student", select: "fullName score" });
+      const result = await Class.findById(foundClassAfter)
+        .select("className semester student")
+        .populate({
+          path: "student",
+          select: "fullName score",
+          populate: {
+            path: "score",
+            model: "score",
+            populate: { path: "course", model: "course" },
+          },
+        });
       res.status(200).json(result);
     } catch (error) {
       next(error);
@@ -66,7 +74,7 @@ class ClassConttroller {
   ) {
     const { yearAcademic } = req.body;
     try {
-      const foundYearAcademic = await Class.findOne({
+      const foundYearAcademic = await Class.find({
         yearAcademic: yearAcademic,
       });
       if (!foundYearAcademic) {
@@ -82,7 +90,7 @@ class ClassConttroller {
     try {
       const result = await Class.find()
         .populate({ path: "homeTeacher", select: "fullName" })
-        .populate({ path: "student", select: "fullName" })
+        .populate({ path: "student", select: "fullName status" })
         .populate({
           path: "schedule",
           select: "hari course startTeach endTeach",
@@ -96,11 +104,11 @@ class ClassConttroller {
   static async findClass(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
-      const foundClass = await Class.findById(id);
-      if (!foundClass) {
+      const foundClassAfter = await Class.findById(id);
+      if (!foundClassAfter) {
         throw { name: "NOT_FOUND_CLASS" };
       }
-      const result = await Class.findById(foundClass);
+      const result = await Class.findById(foundClassAfter);
       res.status(200).json(result);
     } catch (error) {
       next(error);
@@ -109,10 +117,10 @@ class ClassConttroller {
 
   static async updateClass(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { className, yearAcademic, homeTeacher, schedule } = req.body;
+    const { classBefore, yearAcademic, homeTeacher, schedule } = req.body;
     try {
-      const foundClass = await Class.findById(id);
-      if (!foundClass) {
+      const foundClassAfter = await Class.findById(id);
+      if (!foundClassAfter) {
         throw { name: "NOT_FOUND_CLASS" };
       }
       const foundhomeTeacher = await Teacher.findById({
@@ -126,9 +134,9 @@ class ClassConttroller {
         throw { name: "NOT_FOUND_SCHEDULE" };
       }
       const result = await Class.findByIdAndUpdate(
-        foundClass,
+        foundClassAfter,
         {
-          className: className,
+          classBefore: classBefore,
           yearAcademic: yearAcademic,
           homeTeacher: foundhomeTeacher,
           schedule: foundSchedule,
@@ -144,43 +152,44 @@ class ClassConttroller {
   static async deleteClass(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
-      const foundClass = await Class.findById({ _id: id });
-      if (!foundClass) {
+      const foundClassAfter = await Class.findById({ _id: id });
+      if (!foundClassAfter) {
         throw { name: "NOT_FOUND_CLASS" };
       }
-      const result = await Class.findByIdAndDelete(foundClass);
+      const result = await Class.findByIdAndDelete(foundClassAfter);
       res.status(200).json(result);
     } catch (error) {}
   }
 
-  static async changeClass(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const { student, className } = req.body;
-    console.log(student)
-    console.log(className)
+  static async changeClass(req: Request, res: Response, next: NextFunction) {
+    const { student } = req.params;
+    const { classBefore, classAfter } = req.body;
     try {
       const foundStudent = await Student.findById(student);
-      console.log(foundStudent)
       if (!foundStudent) {
         throw { name: "NOT_FOUND_STUDENT" };
       }
-      
-      const foundClass = await Class.findById(className);
-      console.log(foundClass)
-      if (!foundClass) {
+      const foundClassBefore = await Class.findById(classBefore);
+      if (!foundClassBefore) {
         throw { name: "NOT_FOUND_CLASS" };
       }
-    
+      const foundClassAfter = await Class.findById(classAfter);
+      if (!foundClassAfter) {
+        throw { name: "NOT_FOUND_CLASS" };
+      }
       const result = await Student.findByIdAndUpdate(
-        student,
+        foundStudent,
         {
-          classes: foundClass,
+          classes: foundClassAfter,
         },
         { new: true }
       );
+      await Class.findByIdAndUpdate(foundClassBefore, {
+        $pull: { student: foundStudent.id },
+      });
+      await Class.findByIdAndUpdate(foundClassAfter, {
+        $push: { student: foundStudent.id },
+      });
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).name);

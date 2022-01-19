@@ -7,6 +7,7 @@ interface IStudents {
     password: string;
     fullName: string;
     birthDate: string;
+    yearAcademic: string;
     classes: IClass;
     score: Array<IScore>;
 }
