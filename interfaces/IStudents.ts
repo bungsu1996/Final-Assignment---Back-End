@@ -10,6 +10,7 @@ interface IStudents {
     yearAcademic: string;
     classes: IClass;
     score: Array<IScore>;
+    role: string;
 }
 
 export default IStudents;

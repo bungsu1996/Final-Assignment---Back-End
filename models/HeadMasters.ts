@@ -6,6 +6,7 @@ const headMasterSchema = new Schema({
     password: { type: String, required: true },
     fullName: { type: String, required: true },
     birthDate: { type: String, required: true },
+    role: { type: String, default: "headmaster" },
 });
 
 const HeadMaster: Model<IHeadMasters> = model<IHeadMasters>(

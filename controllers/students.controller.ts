@@ -39,24 +39,6 @@ class StudentController {
       await Class.findByIdAndUpdate(findClass, {
         $push: { student: result._id },
       });
-      // let transporter = nodemailer.createTransport({
-      //   host: "smtp.gmail.com",
-      //   port: 465,
-      //   secure: false,
-      //   auth: {
-      //     user: "studentt872@gmail.com",
-      //     pass: "Abcd_1234", 
-      //   }
-      // })
-      // let info = await transporter.sendMail({
-      //   from: "studentt872@gmail.com",
-      //   to: result.email,
-      //   subject: "Register Student School! This Your Account School Sukamaju.",
-      //   text: `Email: ${result.email}, Password: ${result.password}`,
-      //   html: "<b>Hello Student!</b>"
-      // })
-      // console.log("Message sent: %s", info.messageId);
-      // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
       let transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {

@@ -8,6 +8,7 @@ interface IParents {
     birthDate: string;
     student: IStudents;
     class: IClass;
+    role: string;
 }
 
 export default IParents;
