@@ -76,6 +76,7 @@ class users {
           id: result!.id,
           email: result!.email,
           fullName: result!.fullName,
+          role: result!.role,
         },
         "this is a secret key token",
         {
@@ -138,6 +139,7 @@ class users {
           id: result!.id,
           email: result!.email,
           fullName: result!.fullName,
+          role: result!.role,
         },
         "this is a secret key token",
         {
@@ -168,6 +170,7 @@ class users {
           id: result!.id,
           email: result!.email,
           fullName: result!.fullName,
+          role: result!.role,
         },
         "this is a secret key token",
         {
