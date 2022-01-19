@@ -3,6 +3,7 @@ interface IHeadMasters {
     password: string;
     fullName: string;
     birthDate: string;
+    role: string;
 }
 
 export default IHeadMasters;

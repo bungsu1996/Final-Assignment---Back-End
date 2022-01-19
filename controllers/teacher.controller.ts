@@ -172,6 +172,34 @@ class TeacherController {
       next(error);
     }
   }
+
+  static async searchManageScore(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { academicYear, semester, classes } = req.body;
+    try {
+      const result = await Class.find(
+        { className: classes, yearAcademic: academicYear, semester: semester }
+      )
+        .populate({
+          path: "student",
+          select: "fullName score",
+          populate: {
+            path: "score",
+            select: "course dailyScore midtest finaltest resultScore",
+            populate: { path: "course" },
+          },
+        });
+      if (result.length === 0) {
+        throw { name: "NOT_FOUND_SEARCH" };
+      }
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default TeacherController;

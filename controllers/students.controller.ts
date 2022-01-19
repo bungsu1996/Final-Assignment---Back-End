@@ -4,6 +4,7 @@ import Class from "../models/Class";
 import Student from "../models/Students";
 import Score from "../models/Score";
 import Course from "../models/Courses";
+import nodemailer from "nodemailer";
 
 class StudentController {
   static async createStudent(req: Request, res: Response, next: NextFunction) {
@@ -37,6 +38,26 @@ class StudentController {
       });
       await Class.findByIdAndUpdate(findClass, {
         $push: { student: result._id },
+      });
+      let transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: "studentt872@gmail.com",
+          pass: "Abcd_1234",
+        }
+      })
+      let mailOption = {
+        from: "studentt872@gmail.com",
+        to: result.email,
+        subject: "Register Student School! This Your Account School Sukamaju.",
+        text: `Email: ${result.email}, Password: ${password}`,
+      }
+      transporter.sendMail(mailOption, function(err, info) {
+        if (err) {
+          console.log("Error! Sendemail Failed!", err)
+        } else {
+          console.log("Sendemail Succesfull!", info.response)
+        }
       });
       res.status(201).json({ result });
     } catch (error) {
@@ -104,7 +125,7 @@ class StudentController {
     res: Response,
     next: NextFunction
   ) {
-    const { id, status } = req.body;
+    const { id, status } = req.body;    
     try {
       if (!id) {
         throw { name: "NOT_FOUND_STUDENT" };
@@ -133,6 +154,10 @@ class StudentController {
     } catch (error) {
       next(error);
     }
+  }
+
+  static async forgotPasswordStudent(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
   }
 }
 

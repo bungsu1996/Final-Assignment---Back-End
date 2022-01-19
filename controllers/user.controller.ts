@@ -76,6 +76,7 @@ class users {
           id: result!.id,
           email: result!.email,
           fullName: result!.fullName,
+          role: result!.role,
         },
         "this is a secret key token",
         {
@@ -104,8 +105,10 @@ class users {
       const token = jwt.sign(
         {
           id: result!.id,
+          nip: result!.nip,
           email: result!.email,
           fullName: result!.fullName,
+          role: result!.role,
         },
         "this is a secret key token",
         {
@@ -136,6 +139,7 @@ class users {
           id: result!.id,
           email: result!.email,
           fullName: result!.fullName,
+          role: result!.role,
         },
         "this is a secret key token",
         {
@@ -166,6 +170,7 @@ class users {
           id: result!.id,
           email: result!.email,
           fullName: result!.fullName,
+          role: result!.role,
         },
         "this is a secret key token",
         {
