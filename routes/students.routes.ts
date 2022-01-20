@@ -6,10 +6,19 @@ class StudentRoutes {
   constructor() {
     this.studentRoute = Router();
     this.studentControl();
+    this.studentForgotPass();
+    this.studentScore();
   }
   protected studentControl = () => {
     this.studentRoute.put("/update/:id", StudentController.updateStudent);
   };
+  protected studentForgotPass = () => {
+    this.studentRoute.post("/forgot-password", StudentController.forgotPasswordStudent);
+    this.studentRoute.put("/change-password", StudentController.changePasswordStudent);
+  }
+  protected studentScore = () => {
+    this.studentRoute.get("/score/:id", StudentController.seeScore);
+  }
 }
 
 const studentRouter = new StudentRoutes().studentRoute;

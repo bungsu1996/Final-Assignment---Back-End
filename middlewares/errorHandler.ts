@@ -34,7 +34,7 @@ class errorHandler {
         break;
       case "NOT_FOUND_SCORE":
         code = 404;
-        message = "Score Data Not Found!";
+        message = "Score Student Data Not Found!";
         break;
       case "NOT_FOUND_COURSE":
         code = 404;
@@ -63,6 +63,10 @@ class errorHandler {
       case "NOT_FOUND_SEARCH":
         code = 404;
         message = "Data Searching Not Found!";
+        break;
+      case "RANGE_TEST_SCORE":
+        code = 400;
+        message = "Range Test Score Between 0 - 100 Score!";
         break;
       case "NOT_FOUND":
         code = 404;

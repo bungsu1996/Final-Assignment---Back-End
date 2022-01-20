@@ -3,112 +3,267 @@ import bcrypt from "bcryptjs";
 import Class from "../models/Class";
 import Parent from "../models/Parents";
 import Student from "../models/Students";
+import nodemailer from "nodemailer";
+import Otp from "../models/Otp";
 
 class ParentController {
-    static async createParent(req: Request, res: Response, next: NextFunction) {
-        const { email, fullName, birthDate, student, classes } = req.body;
-        try {
-            const word = fullName.split(" ");
-            const num = birthDate.replace(/-/g, "");
-            const password = word[0].toLowerCase() + num;
-            const hashPass = bcrypt.genSaltSync(10);
-            const hashedPass = bcrypt.hashSync(password, hashPass);
-            const findStudent = await Student.findById({ _id: student });
-            if (!findStudent) {
-                throw { name: "NOT_FOUND_STUDENT" };
-            }
-            const findClass = await Class.findById({ _id: classes });
-            if (!findClass) {
-                throw { name: "NOT_FOUND_CLASS" };
-            }
-            const result = await Parent.create({
-                email: email.toLowerCase(),
-                password: hashedPass,
-                fullName: fullName,
-                birthDate: birthDate,
-                student: findStudent,
-                classes: findClass,
-            });
-            res.status(201).json(result);
-        } catch (error) {
-            next(error);
+  static async createParent(req: Request, res: Response, next: NextFunction) {
+    const { email, fullName, birthDate, student } = req.body;
+    try {
+      const word = fullName.split(" ");
+      const num = birthDate.replace(/-/g, "");
+      const password = word[0].toLowerCase() + num;
+      const hashPass = bcrypt.genSaltSync(10);
+      const hashedPass = bcrypt.hashSync(password, hashPass);
+      const findStudent = await Student.findById({ _id: student });
+      if (!findStudent) {
+        throw { name: "NOT_FOUND_STUDENT" };
+      }
+      const result = await Parent.create({
+        email: email.toLowerCase(),
+        password: hashedPass,
+        fullName: fullName,
+        birthDate: birthDate,
+        student: findStudent,
+      });
+      let transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: "studentt872@gmail.com",
+          pass: "Abcd_1234",
+        },
+      });
+      let mailOption = {
+        from: "studentt872@gmail.com",
+        to: result.email,
+        subject:
+          "Register Parent School! This Your Account Parent School Sukamaju.",
+        text: `Email: ${result.email}, Password: ${password}`,
+      };
+      transporter.sendMail(mailOption, function (err, info) {
+        if (err) {
+          console.log("Error! Sendemail Failed!", err);
+        } else {
+          console.log("Sendemail Succesfull!", info.response);
         }
+      });
+      res.status(201).json(result);
+    } catch (error) {
+      next(error);
     }
+  }
 
-    static async findAllParent(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ) {
-        try {
-            const result = await Parent.find();
-            res.status(200).json(result);
-        } catch (error) {
-            next(error);
-        }
+  static async findAllParent(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await Parent.find();
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
     }
+  }
 
-    static async findParent(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.params;
-        try {
-            if (!id) {
-                throw { name: "NOT_FOUND_PARENT" };
-            }
-            const result = await Parent.findById(id);
-            res.status(200).json(result);
-        } catch (error) {
-            next(error);
-        }
+  static async findParent(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    try {
+      const foundParent = await Parent.findById(id);
+      if (!foundParent) {
+        throw { name: "NOT_FOUND_PARENT" };
+      }
+      const result = await Parent.findById(foundParent);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
     }
+  }
 
-    static async updateParent(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.params;
-        const { email, password, fullName, birthDate, student, classes } =
-            req.body;
-        try {
-            if (!id) {
-                throw { name: "NOT_FOUND_PARENT" };
-            }
-            const hashPass = bcrypt.genSaltSync(10);
-            const hashedPass = bcrypt.hashSync(password, hashPass);
-            const findStudent = await Student.findById({ _id: student });
-            if (!findStudent) {
-                throw { name: "NOT_FOUND_STUDENT" };
-            }
-            const findClass = await Class.findById({ _id: classes });
-            if (!findClass) {
-                throw { name: "NOT_FOUND_CLASS" };
-            }
-            const result = await Parent.findByIdAndUpdate(
-                id,
-                {
-                    email: email.toLowerCase(),
-                    password: hashedPass,
-                    fullName: fullName,
-                    birthData: new Date(birthDate),
-                    student: findStudent,
-                    classes: findClass,
-                },
-                { new: true }
-            );
-            res.status(200).json(result);
-        } catch (error) {
-            next(error);
-        }
+  static async updateParent(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    const { email, password, fullName, birthDate, student, classes } = req.body;
+    try {
+      const foundParent = await Parent.findById(id);
+      if (!foundParent) {
+        throw { name: "NOT_FOUND_PARENT" };
+      }
+      const hashPass = bcrypt.genSaltSync(10);
+      const hashedPass = bcrypt.hashSync(password, hashPass);
+      const findStudent = await Student.findById({ _id: student });
+      if (!findStudent) {
+        throw { name: "NOT_FOUND_STUDENT" };
+      }
+      const findClass = await Class.findById({ _id: classes });
+      if (!findClass) {
+        throw { name: "NOT_FOUND_CLASS" };
+      }
+      const result = await Parent.findByIdAndUpdate(
+        foundParent,
+        {
+          email: email.toLowerCase(),
+          password: hashedPass,
+          fullName: fullName,
+          birthData: new Date(birthDate),
+          student: findStudent,
+          classes: findClass,
+        },
+        { new: true }
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
     }
+  }
 
-    static async deleteParent(req: Request, res: Response, next: NextFunction) {
-        const { id } = req.params;
-        try {
-            if (!id) {
-                throw { name: "NOT_FOUND_PARENT" };
-            }
-            const result = await Parent.findByIdAndDelete(id);
-            res.status(200).json(result);
-        } catch (error) {
-            next(error);
-        }
+  static async deleteParent(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    try {
+      const foundParent = await Parent.findById(id);
+      if (!foundParent) {
+        throw { name: "NOT_FOUND_PARENT" };
+      }
+      const result = await Parent.findByIdAndDelete(foundParent);
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
     }
+  }
+
+  static async changeStatusParent(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id, status } = req.body;
+    try {
+      const foundParent = await Parent.findById(id);
+      if (!foundParent) {
+        throw { name: "NOT_FOUND_PARENT" };
+      }
+      const result = await Parent.findByIdAndUpdate(
+        foundParent,
+        {
+          status: status,
+        },
+        { new: true }
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async forgotPasswordParent(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { email } = req.body;
+    try {
+      const foundParent = await Parent.findOne({ email: email });
+      const response: any = {};
+      if (foundParent) {
+        const otpCode = Math.floor(Math.random() * 10000 + 1);
+        const otpData = new Otp({
+          email: email.toLowerCase(),
+          code: otpCode,
+          expireIn: new Date().getTime() + 300 * 1000,
+        });
+        let transporter = nodemailer.createTransport({
+          service: "Gmail",
+          auth: {
+            user: "studentt872@gmail.com",
+            pass: "Abcd_1234",
+          },
+        });
+        let mailOption = {
+          from: "studentt872@gmail.com",
+          to: foundParent.email,
+          subject: "Forgot Password. This Code OTP For Verification Account",
+          text: `Code OTP: ${otpCode}`,
+        };
+        transporter.sendMail(mailOption, function (err, info) {
+          if (err) {
+            console.log("Error! Sendemail Failed!", err);
+          } else {
+            console.log("Sendemail Succesfull!", info.response);
+          }
+        });
+        await otpData.save();
+        response.statusText = "succes";
+        response.message = "Please check your email id";
+      } else {
+        response.statusText = "error";
+        response.message = "Email id parent does not exists";
+      }
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async changePasswordParent(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { email, code, password } = req.body;
+    try {
+      const response: any = {};
+      const foundOtp: any = await Otp.find({ email: email, code: code });
+      const hashPass = bcrypt.genSaltSync(10);
+      const hashedPass = bcrypt.hashSync(password, hashPass);
+      if (foundOtp) {
+        let currentTime = new Date().getTime();
+        let diff = foundOtp.expireIn - currentTime;
+        if (diff) {
+          response.message = "Token Expire";
+          response.statusText = "error";
+        } else {
+          const foundParent = await Parent.findOneAndUpdate(
+            { email: email },
+            {
+              password: hashedPass,
+            },
+            { new: true }
+          );
+          response.message = `Change password succesfull. New Password: ${foundParent}`;
+          response.statusText = "success";
+        }
+      } else {
+        response.message = "Invalid Otp";
+        response.statusText = "error";
+      }
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async seeScoreStudentParent(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+    try {
+      const foundParent = await Parent.findById(id);
+      if (!foundParent) {
+        throw { name: "NOT_FOUND_PARENT" };
+      }
+      const result = await Parent.findById(foundParent)
+        .select("student")
+        .populate({
+          path: "student",
+          select: "fullName score",
+          populate: {
+            path: "score",
+            select: "course dailyScore midtest finaltest resultScore",
+            populate: { path: "course" },
+          },
+        });
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default ParentController;

@@ -9,6 +9,7 @@ interface IParents {
     student: IStudents;
     class: IClass;
     role: string;
+    status: string;
 }
 
 export default IParents;

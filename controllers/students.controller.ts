@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs";
 import Class from "../models/Class";
 import Student from "../models/Students";
 import Score from "../models/Score";
-import Course from "../models/Courses";
 import nodemailer from "nodemailer";
+import Otp from "../models/Otp";
 
 class StudentController {
   static async createStudent(req: Request, res: Response, next: NextFunction) {
@@ -44,19 +44,19 @@ class StudentController {
         auth: {
           user: "studentt872@gmail.com",
           pass: "Abcd_1234",
-        }
-      })
+        },
+      });
       let mailOption = {
         from: "studentt872@gmail.com",
         to: result.email,
-        subject: "Register Student School! This Your Account School Sukamaju.",
+        subject: "Register Student School! This Your Account Student School Sukamaju.",
         text: `Email: ${result.email}, Password: ${password}`,
-      }
-      transporter.sendMail(mailOption, function(err, info) {
+      };
+      transporter.sendMail(mailOption, function (err, info) {
         if (err) {
-          console.log("Error! Sendemail Failed!", err)
+          console.log("Error! Sendemail Failed!", err);
         } else {
-          console.log("Sendemail Succesfull!", info.response)
+          console.log("Sendemail Succesfull!", info.response);
         }
       });
       res.status(201).json({ result });
@@ -78,10 +78,11 @@ class StudentController {
   static async findStudent(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
-      if (!id) {
+      const foundStudent = await Student.findById(id);
+      if (!foundStudent) {
         throw { name: "NOT_FOUND_STUDENT" };
       }
-      const result = await Student.findById(id);
+      const result = await Student.findById(foundStudent);
       res.status(200).json(result);
     } catch (error) {
       next(error);
@@ -92,6 +93,10 @@ class StudentController {
     const { id } = req.params;
     const { email, password, fullName, birthDate, classes, score } = req.body;
     try {
+      const foundStudent = await Student.findById(id);
+      if (!foundStudent) {
+        throw { name: "NOT_FOUND_STUDENT" };
+      }
       const hashPass = bcrypt.genSaltSync(10);
       const hashedPass = bcrypt.hashSync(password, hashPass);
       const findClass = await Class.findById({ _id: classes });
@@ -103,7 +108,7 @@ class StudentController {
         throw { name: "NOT_FOUND_SCORE" };
       }
       const result = await Student.findByIdAndUpdate(
-        id,
+        foundStudent,
         {
           email: email.toLowerCase(),
           password: hashedPass,
@@ -125,13 +130,14 @@ class StudentController {
     res: Response,
     next: NextFunction
   ) {
-    const { id, status } = req.body;    
+    const { id, status } = req.body;
     try {
-      if (!id) {
+      const foundStudent = await Student.findById(id);
+      if (!foundStudent) {
         throw { name: "NOT_FOUND_STUDENT" };
       }
       const result = await Student.findByIdAndUpdate(
-        id,
+        foundStudent,
         {
           status: status,
         },
@@ -146,18 +152,123 @@ class StudentController {
   static async deleteStudent(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
-      if (!id) {
+      const foundStudent = await Student.findById(id);
+      if (!foundStudent) {
         throw { name: "NOT_FOUND_STUDENT" };
       }
-      const result = await Student.findByIdAndDelete(id);
+      const result = await Student.findByIdAndDelete(foundStudent);
       res.status(200).json(result);
     } catch (error) {
       next(error);
     }
   }
 
-  static async forgotPasswordStudent(req: Request, res: Response, next: NextFunction) {
+  static async forgotPasswordStudent(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { email } = req.body;
+    try {
+      const foundStudent = await Student.findOne({ email: email });
+      const response: any = {};
+      if (foundStudent) {
+        const otpCode = Math.floor(Math.random() * 10000 + 1);
+        const otpData = new Otp({
+          email: email.toLowerCase(),
+          code: otpCode,
+          expireIn: new Date().getTime() + 300 * 1000,
+        });
+        let transporter = nodemailer.createTransport({
+          service: "Gmail",
+          auth: {
+            user: "studentt872@gmail.com",
+            pass: "Abcd_1234",
+          },
+        });
+        let mailOption = {
+          from: "studentt872@gmail.com",
+          to: foundStudent.email,
+          subject:
+            "Forgot Password. This Code OTP For Verification Account",
+          text: `Code OTP: ${otpCode}`,
+        };
+        transporter.sendMail(mailOption, function (err, info) {
+          if (err) {
+            console.log("Error! Sendemail Failed!", err);
+          } else {
+            console.log("Sendemail Succesfull!", info.response);
+          }
+        });
+        await otpData.save();
+        response.statusText = "succes";
+        response.message = "Please check your email id";
+      } else {
+        response.statusText = "error";
+        response.message = "Email id student does not exists";
+      }
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async changePasswordStudent(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { email, code, password } = req.body;
+    try {
+      const response: any = {};
+      const foundOtp: any = await Otp.find({ email: email, code: code });
+      const hashPass = bcrypt.genSaltSync(10);
+      const hashedPass = bcrypt.hashSync(password, hashPass);
+      if (foundOtp) {
+        let currentTime = new Date().getTime();
+        let diff = foundOtp.expireIn - currentTime;
+        if (diff) {
+          response.message = "Token Expire";
+          response.statusText = "error";
+        } else {
+          const foundStudent = await Student.findOneAndUpdate(
+            { email: email },
+            {
+              password: hashedPass,
+            },
+            { new: true }
+          );
+          response.message = `Change password succesfull. New Password: ${foundStudent}`;
+          response.statusText = "success";
+        }
+      } else {
+        response.message = "Invalid Otp";
+        response.statusText = "error";
+      }
+      res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async seeScore(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
+    try {
+      const foundStudent = await Student.findById(id);
+      if (!foundStudent) {
+        throw { name: "NOT_FOUND_STUDENT" };
+      }
+      const result = await Student.findById(foundStudent)
+        .select("score")
+        .populate({
+          path: "score",
+          select: "course dailyScore midtest finaltest resultScore",
+          populate: { path: "course" },
+        });
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
   }
 }
 
