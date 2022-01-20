@@ -227,7 +227,7 @@ class TeacherController {
     ) {
         const { id } = req.params;
         try {
-            const result = await Score.findOne({ id }).populate("course");
+            const result = await Score.findOne({ _id: id }).populate("course");
             if (!result) {
                 throw { name: "NOT_FOUND_SEARCH" };
             }
