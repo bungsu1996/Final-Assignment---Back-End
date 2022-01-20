@@ -10,7 +10,7 @@ class coursesController {
       });
       res.status(200).json(result);
     } catch (error) {
-      console.log(error);
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -34,6 +34,7 @@ class coursesController {
       const result = await Course.findById(id);
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }

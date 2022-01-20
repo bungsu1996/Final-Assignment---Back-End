@@ -29,8 +29,8 @@ class scheduleController {
       });
       res.status(201).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
-      console.log(error);
     }
   }
 
@@ -41,8 +41,8 @@ class scheduleController {
         .populate({ path: "course", select: "course" });
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
-      console.log(error);
     }
   }
 
@@ -61,6 +61,7 @@ class scheduleController {
       }
       res.status(200).json(foundSchedule);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -98,6 +99,7 @@ class scheduleController {
         .populate({ path: "course", select: "course" });
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }

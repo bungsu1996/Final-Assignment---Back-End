@@ -29,6 +29,7 @@ class scoreController {
       });
       res.status(201).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -74,6 +75,7 @@ class scoreController {
         res.status(200).json(resultFinalTest);
       }
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }

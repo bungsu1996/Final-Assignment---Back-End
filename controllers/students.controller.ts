@@ -85,6 +85,7 @@ class StudentController {
       const result = await Student.findById(foundStudent);
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -121,6 +122,7 @@ class StudentController {
       );
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -145,6 +147,7 @@ class StudentController {
       );
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -159,6 +162,7 @@ class StudentController {
       const result = await Student.findByIdAndDelete(foundStudent);
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -209,6 +213,7 @@ class StudentController {
       }
       res.status(200).json(response);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -247,6 +252,7 @@ class StudentController {
       }
       res.status(200).json(response);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -267,6 +273,7 @@ class StudentController {
         });
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }

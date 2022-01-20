@@ -49,6 +49,7 @@ class ParentController {
       });
       res.status(201).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -58,6 +59,7 @@ class ParentController {
       const result = await Parent.find();
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -72,6 +74,7 @@ class ParentController {
       const result = await Parent.findById(foundParent);
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -108,6 +111,7 @@ class ParentController {
       );
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -122,6 +126,7 @@ class ParentController {
       const result = await Parent.findByIdAndDelete(foundParent);
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -146,6 +151,7 @@ class ParentController {
       );
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -195,6 +201,7 @@ class ParentController {
       }
       res.status(200).json(response);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -233,6 +240,7 @@ class ParentController {
       }
       res.status(200).json(response);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }
@@ -261,6 +269,7 @@ class ParentController {
         });
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).name);
       next(error);
     }
   }

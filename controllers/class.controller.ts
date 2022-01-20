@@ -15,6 +15,7 @@ class ClassConttroller {
       });
       res.status(201).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -39,6 +40,7 @@ class ClassConttroller {
       );
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -63,6 +65,7 @@ class ClassConttroller {
         });
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -82,6 +85,7 @@ class ClassConttroller {
       }
       res.status(200).json(foundYearAcademic);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -97,6 +101,7 @@ class ClassConttroller {
         });
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -111,6 +116,7 @@ class ClassConttroller {
       const result = await Class.findById(foundClassAfter);
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -145,6 +151,7 @@ class ClassConttroller {
       );
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }

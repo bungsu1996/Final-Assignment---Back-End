@@ -5,6 +5,8 @@ import Courses from "../models/Courses";
 import Class from "../models/Class";
 import Course from "../models/Courses";
 import Score from "../models/Score";
+import nodemailer from "nodemailer";
+import Otp from "../models/Otp";
 
 class TeacherController {
   static async createTeacher(req: Request, res: Response, next: NextFunction) {
@@ -70,6 +72,7 @@ class TeacherController {
       const result = await Teacher.findById(id);
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -103,6 +106,7 @@ class TeacherController {
       );
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -116,6 +120,7 @@ class TeacherController {
       const result = await Teacher.findByIdAndDelete(id);
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -141,6 +146,7 @@ class TeacherController {
       }).populate("course");
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -170,6 +176,7 @@ class TeacherController {
       ).populate("course");
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -199,6 +206,25 @@ class TeacherController {
       }
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
+      next(error);
+    }
+  }
+
+  static async getScoreSpecific(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+    try {
+      const result = await Score.findOne({ id }).populate("course");
+      if (!result) {
+        throw { name: "NOT_FOUND_SEARCH" };
+      }
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -207,23 +233,28 @@ class TeacherController {
     const { score } = req.params;
     const { course, dailyScore } = req.body;
     try {
-      if (dailyScore <= 0 && dailyScore > 100 ) {
-        throw { name: "RANGE_TEST_SCORE" }
+      if (dailyScore <= 0 && dailyScore > 100) {
+        throw { name: "RANGE_TEST_SCORE" };
       }
       const foundScoreStudent = await Score.findById(score);
       if (!foundScoreStudent) {
-        throw { name: "NOT_FOUND_SCORE" }
+        throw { name: "NOT_FOUND_SCORE" };
       }
       const foundCourse = await Course.findById(course);
       if (!foundCourse) {
-        throw { name: "NOT_FOUND_COURSE" }
+        throw { name: "NOT_FOUND_COURSE" };
       }
-      const result = await Score.findByIdAndUpdate(foundScoreStudent, {
-        dailyScore: dailyScore
-      }, { new: true })
-      res.status(200).json(result)
+      const result = await Score.findByIdAndUpdate(
+        foundScoreStudent,
+        {
+          dailyScore: dailyScore,
+        },
+        { new: true }
+      );
+      res.status(200).json(result);
     } catch (error) {
-      next(error)
+      console.log((error as Error).message);
+      next(error);
     }
   }
 
@@ -231,23 +262,28 @@ class TeacherController {
     const { score } = req.params;
     const { course, midscore } = req.body;
     try {
-      if (midscore <= 0 && midscore > 100 ) {
-        throw { name: "RANGE_TEST_SCORE" }
+      if (midscore <= 0 && midscore > 100) {
+        throw { name: "RANGE_TEST_SCORE" };
       }
       const foundScoreStudent = await Score.findById(score);
       if (!foundScoreStudent) {
-        throw { name: "NOT_FOUND_SCORE" }
+        throw { name: "NOT_FOUND_SCORE" };
       }
       const foundCourse = await Course.findById(course);
       if (!foundCourse) {
-        throw { name: "NOT_FOUND_COURSE" }
+        throw { name: "NOT_FOUND_COURSE" };
       }
-      const result = await Score.findByIdAndUpdate(foundScoreStudent, {
-        midtest: midscore
-      }, { new: true })
-      res.status(200).json(result)
+      const result = await Score.findByIdAndUpdate(
+        foundScoreStudent,
+        {
+          midtest: midscore,
+        },
+        { new: true }
+      );
+      res.status(200).json(result);
     } catch (error) {
-      next(error)
+      console.log((error as Error).message);
+      next(error);
     }
   }
 
@@ -255,23 +291,200 @@ class TeacherController {
     const { score } = req.params;
     const { course, finalscore } = req.body;
     try {
-      if (finalscore <= 0 && finalscore > 100 ) {
-        throw { name: "RANGE_TEST_SCORE" }
+      if (finalscore <= 0 && finalscore > 100) {
+        throw { name: "RANGE_TEST_SCORE" };
       }
       const foundScoreStudent = await Score.findById(score);
       if (!foundScoreStudent) {
-        throw { name: "NOT_FOUND_SCORE" }
+        throw { name: "NOT_FOUND_SCORE" };
       }
       const foundCourse = await Course.findById(course);
       if (!foundCourse) {
-        throw { name: "NOT_FOUND_COURSE" }
+        throw { name: "NOT_FOUND_COURSE" };
       }
-      const result = await Score.findByIdAndUpdate(foundScoreStudent, {
-        finaltest: finalscore
-      }, { new: true })
-      res.status(200).json(result)
+      const result = await Score.findByIdAndUpdate(
+        foundScoreStudent,
+        {
+          finaltest: finalscore,
+        },
+        { new: true }
+      );
+      res.status(200).json(result);
     } catch (error) {
-      next(error)
+      console.log((error as Error).message);
+      next(error);
+    }
+  }
+
+  static async updateScore(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    const { nama, value } = req.body;
+    try {
+      if (nama === "dailyScore") {
+        const updateScore = await Score.findByIdAndUpdate(
+          id,
+          {
+            dailyScore: value,
+          },
+          { new: true }
+        ).populate("course");
+        const resultScore =
+          (updateScore.dailyScore +
+            updateScore.midtest +
+            updateScore.finaltest) /
+          3;
+        const result = await Score.findByIdAndUpdate(
+          id,
+          {
+            resultScore,
+          },
+          {
+            new: true,
+          }
+        ).populate("course");
+        res.status(200).json(result);
+      } else if (nama === "midtest") {
+        const updateScore = await Score.findByIdAndUpdate(
+          id,
+          {
+            midtest: value,
+          },
+          { new: true }
+        ).populate("course");
+        const resultScore =
+          (updateScore.dailyScore +
+            updateScore.midtest +
+            updateScore.finaltest) /
+          3;
+        const result = await Score.findByIdAndUpdate(
+          id,
+          {
+            resultScore,
+          },
+          {
+            new: true,
+          }
+        ).populate("course");
+        res.status(200).json(result);
+      } else if (nama === "finaltest") {
+        const updateScore = await Score.findByIdAndUpdate(
+          id,
+          {
+            finaltest: value,
+          },
+          { new: true }
+        ).populate("course");
+        const resultScore =
+          (updateScore.dailyScore +
+            updateScore.midtest +
+            updateScore.finaltest) /
+          3;
+        const result = await Score.findByIdAndUpdate(
+          id,
+          {
+            resultScore,
+          },
+          {
+            new: true,
+          }
+        ).populate("course");
+        res.status(200).json(result);
+      } else {
+        throw { name: "Name Score not found" };
+      }
+    } catch (error) {
+      console.log((error as Error).message);
+      next(error);
+    }
+  }
+
+  static async forgotPasswordTeacher(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { email } = req.body;
+    try {
+      const foundTeacher = await Teacher.findOne({ email: email });
+      const response: any = {};
+      if (foundTeacher) {
+        const otpCode = Math.floor(Math.random() * 10000 + 1);
+        const otpData = new Otp({
+          email: email.toLowerCase(),
+          code: otpCode,
+          expireIn: new Date().getTime() + 300 * 1000,
+        });
+        let transporter = nodemailer.createTransport({
+          service: "Gmail",
+          auth: {
+            user: "studentt872@gmail.com",
+            pass: "Abcd_1234",
+          },
+        });
+        let mailOption = {
+          from: "studentt872@gmail.com",
+          to: foundTeacher.email,
+          subject:
+            "Forgot Password. This Code OTP For Verification Account",
+          text: `Code OTP: ${otpCode}`,
+        };
+        transporter.sendMail(mailOption, function (err, info) {
+          if (err) {
+            console.log("Error! Sendemail Failed!", err);
+          } else {
+            console.log("Sendemail Succesfull!", info.response);
+          }
+        });
+        await otpData.save();
+        response.statusText = "succes";
+        response.message = "Please check your email id";
+      } else {
+        response.statusText = "error";
+        response.message = "Email id teacher does not exists";
+      }
+      res.status(200).json(response);
+    } catch (error) {
+      console.log((error as Error).name);
+      next(error);
+    }
+  }
+
+  static async changePasswordTeacher(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { email, code, password } = req.body;
+    try {
+      const response: any = {};
+      const foundOtp: any = await Otp.find({ email: email, code: code });
+      const hashPass = bcrypt.genSaltSync(10);
+      const hashedPass = bcrypt.hashSync(password, hashPass);
+      if (foundOtp) {
+        let currentTime = new Date().getTime();
+        let diff = foundOtp.expireIn - currentTime;
+        if (diff) {
+          response.message = "Token Expire";
+          response.statusText = "error";
+        } else {
+          const foundTeacher = await Teacher.findOneAndUpdate(
+            { email: email },
+            {
+              password: hashedPass,
+            },
+            { new: true }
+          );
+          response.message = `Change password succesfull. New Password: ${foundTeacher}`;
+          response.statusText = "success";
+        }
+      } else {
+        response.message = "Invalid Otp";
+        response.statusText = "error";
+      }
+      res.status(200).json(response);
+    } catch (error) {
+      console.log((error as Error).name);
+      next(error);
     }
   }
 }
