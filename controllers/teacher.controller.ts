@@ -7,6 +7,7 @@ import Course from "../models/Courses";
 import Score from "../models/Score";
 import nodemailer from "nodemailer";
 import Otp from "../models/Otp";
+import Student from "../models/Students";
 
 class TeacherController {
   static async createTeacher(req: Request, res: Response, next: NextFunction) {
@@ -17,29 +18,25 @@ class TeacherController {
       const password = word[0].toLowerCase() + num;
       const hashPass = bcrypt.genSaltSync(10);
       const hashedPass = bcrypt.hashSync(password, hashPass);
-      const findCourse = await Courses.findById({ _id: course });
-      let nip: string = "";
-      await Teacher.find({})
-        .sort({ _id: -1 })
-        .limit(1)
-        .then((teacher) => {
-          if ((teacher[0].nip += 0 == 0 || !teacher)) {
-            const n = 1;
-            nip = String(n).padStart(3, "0");
-          } else {
-            const n = parseInt(teacher[0].nip);
-            nip = String(n + 1).padStart(3, "0");
-          }
-        });
+      const findCourse = await Courses.findOne({ course: course });
       if (!findCourse) {
         throw { name: "NOT_FOUND_COURSE" };
       }
-      const findClass = await Class.findById({ _id: teachClass });
+      const findClass = await Class.findOne({ className: teachClass });
       if (!findClass) {
         throw { name: "NOT_FOUND_CLASS" };
       }
+      // let nip: string = "";
+      // const getnip = await Teacher.find({}).sort({ _id: -1 }).limit(1);
+      // if (getnip.length < 1) {
+      //   const n = 1;
+      //   nip = String(n).padStart(6, "0");
+      // } else {
+      //   const n = parseInt(getnip[0].nip);
+      //   nip = String(n + 1).padStart(6, "0");
+      // }
       const result = await Teacher.create({
-        nip: nip,
+        // nip: nip,
         email: email.toLowerCase(),
         password: hashedPass,
         fullName: fullName,
@@ -47,7 +44,27 @@ class TeacherController {
         course: findCourse,
         teachClass: findClass,
       });
-      res.status(201).json(result);
+      let transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: "studentt872@gmail.com",
+          pass: "Abcd_1234",
+        },
+      });
+      let mailOption = {
+        from: "studentt872@gmail.com",
+        to: result.email,
+        subject: "Register Teacher School! This Your Account Student School Sukamaju.",
+        text: `Email: ${result.email}, Password: ${password}`,
+      };
+      transporter.sendMail(mailOption, function (err, info) {
+        if (err) {
+          console.log("Error! Sendemail Failed!", err);
+        } else {
+          console.log("Sendemail Succesfull!", info.response);
+        }
+      });
+      res.status(201).json({ Message: result });
     } catch (error) {
       console.log((error as Error).message);
       next(error);
@@ -186,7 +203,7 @@ class TeacherController {
     res: Response,
     next: NextFunction
   ) {
-    const { academicYear, semester, classes } = req.body;
+    const { academicYear, semester, classes } = req.query;
     try {
       const result = await Class.find({
         className: classes,
@@ -398,6 +415,21 @@ class TeacherController {
     }
   }
 
+  static async findStudentScore(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+    try {
+      const result = await Score.findById(id);
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).message);
+      next(error);
+    }
+  }
+
   static async forgotPasswordTeacher(
     req: Request,
     res: Response,
@@ -424,8 +456,7 @@ class TeacherController {
         let mailOption = {
           from: "studentt872@gmail.com",
           to: foundTeacher.email,
-          subject:
-            "Forgot Password. This Code OTP For Verification Account",
+          subject: "Forgot Password. This Code OTP For Verification Account",
           text: `Code OTP: ${otpCode}`,
         };
         transporter.sendMail(mailOption, function (err, info) {
@@ -482,6 +513,18 @@ class TeacherController {
         response.statusText = "error";
       }
       res.status(200).json(response);
+    } catch (error) {
+      console.log((error as Error).name);
+      next(error);
+    }
+  }
+
+  static async getClass(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    console.log(id)
+    try {
+      const result = await Teacher.findById(id).select("teachClass").populate({ path: "teachClass"})
+      res.status(200).json(result)
     } catch (error) {
       console.log((error as Error).name);
       next(error);

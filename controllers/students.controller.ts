@@ -13,7 +13,7 @@ class StudentController {
       const word = fullName.split(" ");
       const num = birthDate.replace(/-/g, "");
       const password = word[0].toLowerCase() + num;
-      const findClass = await Class.findById({ _id: classes });
+      const findClass = await Class.findOne({ className: classes });
       if (!findClass) {
         throw { name: "NOT_FOUND_CLASS" };
       }
@@ -59,7 +59,7 @@ class StudentController {
           console.log("Sendemail Succesfull!", info.response);
         }
       });
-      res.status(201).json({ result });
+      res.status(201).json({ Message: result });
     } catch (error) {
       console.log((error as Error).message);
       next(error);
