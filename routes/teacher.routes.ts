@@ -37,6 +37,7 @@ class TeacherRoutes {
   }
   protected getSpesificClass = () => {
     this.teacherRoute.get("/class/:id", TeacherController.getClass);
+    this.teacherRoute.get("/teach-class/:id", TeacherController.findTeacher);
   }
 }
 

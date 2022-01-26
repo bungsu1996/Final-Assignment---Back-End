@@ -1,7 +1,8 @@
 interface ICalendar {
   title: string;
-  date: string;
-  link: any;
+  start: string;
+  end: string;
+  allDay: string;
 }
 
-export default ICalendar;
+export default ICalendar

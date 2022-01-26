@@ -13,7 +13,7 @@ class ClassConttroller {
         yearAcademic: yearAcademic,
         semester: semester,
       });
-      res.status(201).json(result);
+      res.status(201).json({Message: result});
     } catch (error) {
       console.log((error as Error).message);
       next(error);

@@ -3,9 +3,10 @@ import ICalendar from "../interfaces/ICalendar";
 
 const calendarSchema = new Schema(
   {
-    title: { type: String, required: true },
-    date: { type: Date, required: true },
-    link: { type: String },
+    title: { type: String },
+    start: { type: String },
+    end: { type: String },
+    allDay: { type: String },
   },
   { versionKey: false }
 );

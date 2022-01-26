@@ -523,7 +523,7 @@ class TeacherController {
     const { id } = req.params;
     console.log(id)
     try {
-      const result = await Teacher.findById(id).select("teachClass").populate({ path: "teachClass"})
+      const result = await Class.findById(id)
       res.status(200).json(result)
     } catch (error) {
       console.log((error as Error).name);
