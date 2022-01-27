@@ -16,6 +16,15 @@ class calendarController {
       next(error);
     }
   }
+
+  static async getCalendar(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await Calendar.find();
+      res.status(200).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default calendarController;

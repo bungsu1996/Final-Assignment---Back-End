@@ -34,7 +34,8 @@ class Routes {
     this.router.use("/schoolwork", schoolworkRoutes);
     this.router.use("/course", courseRoutes);
     this.router.use("/schedule", scheduleRoutes);
-    this.router.post("/addEvent", calendarController.createCalendar)
+    this.router.post("/addEvent", calendarController.createCalendar);
+    this.router.get("/getEvent", calendarController.getCalendar);
   };
   protected headmasterRoute = () => {
     this.router.use("/headmaster", auth.authentication, auth.isHeadmaster, headmasterRouter);

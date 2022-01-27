@@ -94,6 +94,20 @@ class TeacherController {
     }
   }
 
+  static async getTeacher(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    try {
+      if (!id) {
+        throw { name: "NOT_FOUND_TEACHER" };
+      }
+      const result = await Teacher.findById(id);
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).message);
+      next(error);
+    }
+  }
+
   static async updateTeacher(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     const { email, password, fullName, birthDate, course, teachClass } =
@@ -523,7 +537,7 @@ class TeacherController {
     const { id } = req.params;
     console.log(id)
     try {
-      const result = await Class.findById(id)
+      const result = await Class.findById(id).populate("student")
       res.status(200).json(result)
     } catch (error) {
       console.log((error as Error).name);

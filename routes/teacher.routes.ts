@@ -1,18 +1,26 @@
 import { Router } from "express";
+import coursesController from "../controllers/course.controller";
 import scoreController from "../controllers/score.controller";
 import TeacherController from "../controllers/teacher.controller";
-import Teacher from "../models/Teachers";
 
 class TeacherRoutes {
   public teacherRoute: Router;
   constructor() {
     this.teacherRoute = Router();
+    this.teacher();
     this.teacherControlScore();
     this.teacherDailyScore();
     this.teacherScoreSpesific();
     this.teacherForgotPassword();
     this.findScoreStudent();
     this.getSpesificClass();
+    this.spesificCourse();
+  }
+  protected teacher = () => {
+    this.teacherRoute.get("/:id", TeacherController.getTeacher);
+  }
+  protected spesificCourse = () => {
+    this.teacherRoute.get("/course/:id", coursesController.findCourse);
   }
   protected teacherControlScore = () => {
     this.teacherRoute.post("/score/create", scoreController.createScore);
