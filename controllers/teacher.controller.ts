@@ -11,7 +11,7 @@ import Student from "../models/Students";
 
 class TeacherController {
   static async createTeacher(req: Request, res: Response, next: NextFunction) {
-    const { email, fullName, birthDate, course, teachClass } = req.body;
+    const { emailSend, fullName, birthDate, course, teachClass } = req.body;
     try {
       const word = fullName.split(" ");
       const num = birthDate.replace(/-/g, "");
@@ -26,6 +26,8 @@ class TeacherController {
       if (!findClass) {
         throw { name: "NOT_FOUND_CLASS" };
       }
+      const schoolEmail = "@sdsukamaju.co.id";
+      const setEmail = word[0].toLowerCase() + "." + num + schoolEmail;
       // let nip: string = "";
       // const getnip = await Teacher.find({}).sort({ _id: -1 }).limit(1);
       // if (getnip.length < 1) {
@@ -37,7 +39,8 @@ class TeacherController {
       // }
       const result = await Teacher.create({
         // nip: nip,
-        email: email.toLowerCase(),
+        email: setEmail,
+        emailSend: emailSend,
         password: hashedPass,
         fullName: fullName,
         birthDate: birthDate,
@@ -53,9 +56,10 @@ class TeacherController {
       });
       let mailOption = {
         from: "studentt872@gmail.com",
-        to: result.email,
-        subject: "Register Teacher School! This Your Account Student School Sukamaju.",
-        text: `Email: ${result.email}, Password: ${password}`,
+        to: result.emailSend,
+        subject:
+          "Account Teacher School For Access Teacher Data School Sdn Sukamaju",
+        html: `<p>Welcome to ${fullName} in Teacher Teams Sdn Sukamaju<br />Please use this account for login to School Sdn Sukamaju :<br /><b>Email:</b> ${result.email}<br /><b>Password:</b> ${password}</p><br /><b>Dont Tell To Another This Account! Private Account Teacher</b><br />`,
       };
       transporter.sendMail(mailOption, function (err, info) {
         if (err) {
@@ -86,7 +90,7 @@ class TeacherController {
       if (!id) {
         throw { name: "NOT_FOUND_TEACHER" };
       }
-      const result = await Teacher.findById(id);
+      const result = await Teacher.findById(id).populate("course teachClass");
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).message);
@@ -110,24 +114,20 @@ class TeacherController {
 
   static async updateTeacher(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { email, password, fullName, birthDate, course, teachClass } =
+    const { fullName, birthDate, course, teachClass } =
       req.body;
     try {
-      const hashPass = bcrypt.genSaltSync(10);
-      const hashedPass = bcrypt.hashSync(password, hashPass);
-      const findCourse = await Courses.findById({ _id: course });
+      const findCourse = await Courses.findOne({ course : course });
       if (!findCourse) {
         throw { name: "NOT_FOUND_COURSE" };
       }
-      const findClass = await Class.findById({ _id: teachClass });
+      const findClass = await Class.findOne({ nameClass: teachClass });
       if (!findClass) {
         throw { name: "NOT_FOUND_CLASS" };
       }
       const result = await Teacher.findByIdAndUpdate(
         id,
         {
-          email: email.toLowerCase(),
-          password: hashedPass,
           fullName: fullName,
           birthData: birthDate,
           course: findCourse,
@@ -535,10 +535,10 @@ class TeacherController {
 
   static async getClass(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    console.log(id)
+    console.log(id);
     try {
-      const result = await Class.findById(id).populate("student")
-      res.status(200).json(result)
+      const result = await Class.findById(id).populate("student");
+      res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).name);
       next(error);

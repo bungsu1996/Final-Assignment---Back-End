@@ -8,19 +8,22 @@ import Otp from "../models/Otp";
 
 class ParentController {
   static async createParent(req: Request, res: Response, next: NextFunction) {
-    const { email, fullName, birthDate, student } = req.body;
+    const { emailSend, fullName, birthDate, student } = req.body;
     try {
       const word = fullName.split(" ");
       const num = birthDate.replace(/-/g, "");
       const password = word[0].toLowerCase() + num;
       const hashPass = bcrypt.genSaltSync(10);
       const hashedPass = bcrypt.hashSync(password, hashPass);
-      const findStudent = await Student.findById({ _id: student });
+      const findStudent = await Student.findOne({ fullName: student });
       if (!findStudent) {
         throw { name: "NOT_FOUND_STUDENT" };
       }
+      const schoolEmail = "@sdsukamaju.co.id";
+      const setEmail = word[0].toLowerCase() + "." + num + schoolEmail;
       const result = await Parent.create({
-        email: email.toLowerCase(),
+        email: setEmail,
+        emailSend: emailSend,
         password: hashedPass,
         fullName: fullName,
         birthDate: birthDate,
@@ -35,10 +38,10 @@ class ParentController {
       });
       let mailOption = {
         from: "studentt872@gmail.com",
-        to: result.email,
+        to: result.emailSend,
         subject:
-          "Register Parent School! This Your Account Parent School Sukamaju.",
-        text: `Email: ${result.email}, Password: ${password}`,
+          "Account Parent School For Access Parent Data School Sdn Sukamaju",
+        html: `<p>Welcome to ${fullName} in School Sdn Sukamaju<br />Please use this account for login to School Sdn Sukamaju :<br /><b>Email:</b> ${result.email}<br /><b>Password:</b> ${password}<br /><b>Student:</b> ${student}</p><br /><b>Dont Tell To Another This Account! Private Account Student</b><br />`,
       };
       transporter.sendMail(mailOption, function (err, info) {
         if (err) {

@@ -190,6 +190,7 @@ class users {
           id: result!.id,
           email: result!.email,
           fullName: result!.fullName,
+          role: result!.role,
         },
       });
     }
@@ -224,6 +225,7 @@ class users {
             to: foundTeacher.email,
             subject: "Forgot Password. This Code OTP For Verification Account",
             text: `Code OTP: ${otpCode}`,
+            html: '<p>Click This Link to Change Password<p> <br/ > <a>http://localhost:4200/changePassword</a>'
           };
           transporter.sendMail(mailOption, function (err, info) {
             if (err) {

@@ -8,7 +8,7 @@ import Otp from "../models/Otp";
 
 class StudentController {
   static async createStudent(req: Request, res: Response, next: NextFunction) {
-    const { email, fullName, birthDate, classes } = req.body;
+    const { emailSend, fullName, birthDate, classes } = req.body;
     try {
       const word = fullName.split(" ");
       const num = birthDate.replace(/-/g, "");
@@ -26,10 +26,13 @@ class StudentController {
         const n = parseInt(getNis[0].nis);
         nis = String(n + 1).padStart(6, "0");
       }
+      const schoolEmail = "@sdsukamaju.co.id";
+      const setEmail = word[0].toLowerCase() + "." + num + schoolEmail;
       const hashPass = bcrypt.genSaltSync(10);
       const hashedPass = bcrypt.hashSync(password, hashPass);
       const result = await Student.create({
-        email: email.toLowerCase(),
+        email: setEmail,
+        emailSend: emailSend,
         password: hashedPass,
         fullName: fullName,
         birthDate: birthDate,
@@ -39,6 +42,7 @@ class StudentController {
       await Class.findByIdAndUpdate(findClass, {
         $push: { student: result._id },
       });
+
       let transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {
@@ -48,9 +52,9 @@ class StudentController {
       });
       let mailOption = {
         from: "studentt872@gmail.com",
-        to: result.email,
-        subject: "Register Student School! This Your Account Student School Sukamaju.",
-        text: `Email: ${result.email}, Password: ${password}`,
+        to: result.emailSend,
+        subject: "Account Student School For Access Student Data School Sdn Sukamaju",
+        html: `<p>Welcome to ${fullName} in School Sdn Sukamaju<br />Please use this account for login to School Sdn Sukamaju :<br /><b>Email:</b> ${result.email}<br /><b>Password:</b> ${password}</p><br /><b>Dont Tell To Another This Account! Private Account Student</b><br />`,
       };
       transporter.sendMail(mailOption, function (err, info) {
         if (err) {
@@ -68,7 +72,7 @@ class StudentController {
 
   static async findAllStudent(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await Student.find();
+      const result = await Student.find().populate("classes");
       res.status(200).json(result);
     } catch (error) {
       next(error);

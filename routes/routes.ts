@@ -39,6 +39,7 @@ class Routes {
   };
   protected headmasterRoute = () => {
     this.router.use("/headmaster", auth.authentication, auth.isHeadmaster, headmasterRouter);
+   
   };
   protected teacherRoute = () => {
     this.router.use("/teacher", auth.authentication, auth.isTeacher, teacherRouter);

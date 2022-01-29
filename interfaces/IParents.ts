@@ -3,6 +3,7 @@ import IStudents from "./IStudents";
 
 interface IParents {
     email: string;
+    emailSend: string;
     password: string;
     fullName: string;
     birthDate: string;

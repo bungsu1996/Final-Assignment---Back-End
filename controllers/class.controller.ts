@@ -6,10 +6,10 @@ import Teacher from "../models/Teachers";
 
 class ClassConttroller {
   static async createClass(req: Request, res: Response, next: NextFunction) {
-    const { classBefore, yearAcademic, semester } = req.body;
+    const { className, yearAcademic, semester } = req.body;
     try {
       const result = await Class.create({
-        classBefore: classBefore,
+        className: className,
         yearAcademic: yearAcademic,
         semester: semester,
       });
