@@ -4,6 +4,7 @@ import ICourses from "../interfaces/ICourses";
 const courseSchema = new Schema(
   {
     course: { type: String, required: true },
+    teacher: { type: Schema.Types.ObjectId, ref: 'teacher' }
   },
   {
     versionKey: false,

@@ -5,6 +5,7 @@ const homeroomSchema = new Schema(
   {
     homeroomName: { type: Schema.Types.ObjectId, ref: "teacher" },
     className: { type: Schema.Types.ObjectId, ref: "class" },
+    role: { type: String, default: 'homeroom'}
   },
   {
     versionKey: false,

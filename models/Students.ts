@@ -6,14 +6,15 @@ const studentSchema = new Schema({
     email: { type: String, unique: true },
     emailSend: { type: String, required: true, unique: true },
     password: { type: String, default: "1234abcd" },
-    fullName: { type: String, required: true },
-    birthDate: { type: String, required: true },
+    fullName: { type: String },
+    birthDate: { type: String },
     yearAcademic: { type: String, default: "2021/2022" },
     role: { type: String, default: "student" },
     status: { type: String, default: "active" },
     classes: { type: Schema.Types.ObjectId, ref: "class" },
     schedule: [{ type: Schema.Types.ObjectId, ref: "calendar" }],
     score: [{ type: Schema.Types.ObjectId, ref: "score" }],
+    parent: [{ type: Schema.Types.ObjectId, ref: "parent" }]
 });
 
 const Student: Model<IStudents> = model<IStudents>("student", studentSchema);

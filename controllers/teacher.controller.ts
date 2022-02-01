@@ -47,6 +47,9 @@ class TeacherController {
         course: findCourse,
         teachClass: findClass,
       });
+      await Course.findByIdAndUpdate(findCourse, {
+        $set: { teacher: result._id },
+      });
       let transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {
@@ -114,10 +117,9 @@ class TeacherController {
 
   static async updateTeacher(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { fullName, birthDate, course, teachClass } =
-      req.body;
+    const { fullName, birthDate, course, teachClass } = req.body;
     try {
-      const findCourse = await Courses.findOne({ course : course });
+      const findCourse = await Courses.findOne({ course: course });
       if (!findCourse) {
         throw { name: "NOT_FOUND_COURSE" };
       }

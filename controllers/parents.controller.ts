@@ -8,9 +8,9 @@ import Otp from "../models/Otp";
 
 class ParentController {
   static async createParent(req: Request, res: Response, next: NextFunction) {
-    const { emailSend, fullName, birthDate, student } = req.body;
+    const { emailSend, father, mother, birthDate, student } = req.body;
     try {
-      const word = fullName.split(" ");
+      const word = father.split(" ");
       const num = birthDate.replace(/-/g, "");
       const password = word[0].toLowerCase() + num;
       const hashPass = bcrypt.genSaltSync(10);
@@ -25,7 +25,8 @@ class ParentController {
         email: setEmail,
         emailSend: emailSend,
         password: hashedPass,
-        fullName: fullName,
+        father: father,
+        mother: mother,
         birthDate: birthDate,
         student: findStudent,
       });
@@ -41,7 +42,7 @@ class ParentController {
         to: result.emailSend,
         subject:
           "Account Parent School For Access Parent Data School Sdn Sukamaju",
-        html: `<p>Welcome to ${fullName} in School Sdn Sukamaju<br />Please use this account for login to School Sdn Sukamaju :<br /><b>Email:</b> ${result.email}<br /><b>Password:</b> ${password}<br /><b>Student:</b> ${student}</p><br /><b>Dont Tell To Another This Account! Private Account Student</b><br />`,
+        html: `<p>Welcome to ${father} in School Sdn Sukamaju<br />Please use this account for login to School Sdn Sukamaju :<br /><b>Email:</b> ${result.email}<br /><b>Password:</b> ${password}<br /><b>Student:</b> ${student}</p><br /><b>Dont Tell To Another This Account! Private Account Student</b><br />`,
       };
       transporter.sendMail(mailOption, function (err, info) {
         if (err) {
@@ -49,6 +50,9 @@ class ParentController {
         } else {
           console.log("Sendemail Succesfull!", info.response);
         }
+      });
+      await Student.findByIdAndUpdate(findStudent, {
+        $push: { parent: result._id },
       });
       res.status(201).json(result);
     } catch (error) {
@@ -59,7 +63,7 @@ class ParentController {
 
   static async findAllParent(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await Parent.find();
+      const result = await Parent.find().populate("student");
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).name);
@@ -74,7 +78,7 @@ class ParentController {
       if (!foundParent) {
         throw { name: "NOT_FOUND_PARENT" };
       }
-      const result = await Parent.findById(foundParent);
+      const result = await Parent.findById(foundParent).populate("student");
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).name);
@@ -84,33 +88,25 @@ class ParentController {
 
   static async updateParent(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { email, password, fullName, birthDate, student, classes } = req.body;
+    const { father, mother, birthDate, student } = req.body;
     try {
       const foundParent = await Parent.findById(id);
       if (!foundParent) {
         throw { name: "NOT_FOUND_PARENT" };
       }
-      const hashPass = bcrypt.genSaltSync(10);
-      const hashedPass = bcrypt.hashSync(password, hashPass);
-      const findStudent = await Student.findById({ _id: student });
+      const findStudent = await Student.findOne({ fullName: student });
       if (!findStudent) {
         throw { name: "NOT_FOUND_STUDENT" };
       }
-      const findClass = await Class.findById({ _id: classes });
-      if (!findClass) {
-        throw { name: "NOT_FOUND_CLASS" };
-      }
+      console.log(findStudent)
       const result = await Parent.findByIdAndUpdate(
         foundParent,
         {
-          email: email.toLowerCase(),
-          password: hashedPass,
-          fullName: fullName,
-          birthData: new Date(birthDate),
-          student: findStudent,
-          classes: findClass,
+          father: father,
+          mother: mother,
+          birthData: birthDate,
         },
-        { new: true }
+        { $push: { student: findStudent.id }, new: true }
       );
       res.status(200).json(result);
     } catch (error) {

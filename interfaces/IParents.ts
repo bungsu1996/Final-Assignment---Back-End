@@ -5,9 +5,10 @@ interface IParents {
     email: string;
     emailSend: string;
     password: string;
-    fullName: string;
+    father: string;
+    mother: string;
     birthDate: string;
-    student: IStudents;
+    student: Array<IStudents>;
     class: IClass;
     role: string;
     status: string;

@@ -1,5 +1,6 @@
 import ICalendar from "./ICalendar";
 import IClass from "./IClass";
+import IParents from "./IParents";
 import IScore from "./IScore";
 
 interface IStudents {
@@ -13,6 +14,7 @@ interface IStudents {
     classes: IClass;
     score: Array<IScore>;
     schedule: Array<ICalendar>;
+    parent: IParents;
     role: string;
 }
 

@@ -2,8 +2,9 @@ import IClass from "./IClass";
 import ITeachers from "./ITeachers";
 
 interface IHomeroom {
-  homerooomName: ITeachers;
+  homeroomName: ITeachers;
   className: IClass;
+  role: string;
 }
 
 export default IHomeroom;

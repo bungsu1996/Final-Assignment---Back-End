@@ -22,6 +22,7 @@ class headmasterRoutes {
     this.headmasterControlScore();
     this.headmasterControlSchedule();
   }
+  protected headmasterSelf = () => {};
   protected headmasterControlTeacher = () => {
     this.headmasterRoute.post(
       "/teacher/create",
@@ -40,15 +41,17 @@ class headmasterRoutes {
     );
   };
   protected headmasterControlHomeroom = () => {
-    this.headmasterRoute.put(
-      "/homeroom/set-roomteacher/:classes",
+    this.headmasterRoute.post(
+      "/homeroom/set-roomteacher",
       homeroomController.setHomeroom
     );
     this.headmasterRoute.get("/homeroom", homeroomController.seeHomeroom);
+    this.headmasterRoute.get("/homeroom/:id", homeroomController.findHomeroom);
     this.headmasterRoute.get(
-      "/homeroom/:homeroom",
+      "/homeroom/student/:id",
       homeroomController.scoreByClassHomeroom
     );
+    this.headmasterRoute.put("/homeroom/change/:id", homeroomController.changeHomeroom);
   };
   protected headmasterControlStudent = () => {
     this.headmasterRoute.post(
@@ -93,13 +96,18 @@ class headmasterRoutes {
     this.headmasterRoute.post("/course/create", coursesController.createCourse);
     this.headmasterRoute.get("/course", coursesController.findAllCourse);
     this.headmasterRoute.get("/course/:id", coursesController.findCourse);
+    this.headmasterRoute.put("/course/:id", coursesController.updateCourse);
+    this.headmasterRoute.post(
+      "/course/set-course",
+      coursesController.setCourseTeacher
+    );
+    this.headmasterRoute.post(
+      "/course/update-course",
+      coursesController.updateCourseTeacher
+    );
   };
   protected headmasterControlScore = () => {
     this.headmasterRoute.post("/score/create", scoreController.createScore);
-    this.headmasterRoute.get(
-      "/score/by-class",
-      homeroomController.seeScoreByClass
-    );
   };
   protected headmasterControlSchedule = () => {
     this.headmasterRoute.post(

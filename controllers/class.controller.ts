@@ -93,7 +93,7 @@ class ClassConttroller {
   static async findAllClass(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await Class.find()
-        .populate({ path: "homeTeacher", select: "fullName" })
+        .populate({ path: "homeTeacher", populate: { path: "homeroomName"} })
         .populate({ path: "student", select: "fullName status" })
         .populate({
           path: "schedule",
@@ -109,11 +109,16 @@ class ClassConttroller {
   static async findClass(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
-      const foundClassAfter = await Class.findById(id);
-      if (!foundClassAfter) {
+      const foundClass = await Class.findById(id);
+      if (!foundClass) {
         throw { name: "NOT_FOUND_CLASS" };
       }
-      const result = await Class.findById(foundClassAfter);
+      const result = await Class.findById(foundClass).populate({ path: "homeTeacher", select: "fullName" })
+      .populate({ path: "student", select: "fullName status" })
+      .populate({
+        path: "schedule",
+        select: "hari course startTeach endTeach",
+      });
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).message);
@@ -123,29 +128,18 @@ class ClassConttroller {
 
   static async updateClass(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { classBefore, yearAcademic, homeTeacher, schedule } = req.body;
+    const { classes, yearAcademic, semester, } = req.body;
     try {
-      const foundClassAfter = await Class.findById(id);
-      if (!foundClassAfter) {
+      const foundClass = await Class.findById(id);
+      if (!foundClass) {
         throw { name: "NOT_FOUND_CLASS" };
       }
-      const foundhomeTeacher = await Teacher.findById({
-        _id: homeTeacher,
-      });
-      if (!foundhomeTeacher) {
-        throw { name: "NOT_FOUND_HOMEROOM" };
-      }
-      const foundSchedule = await Schedule.findById({ _id: schedule });
-      if (!foundSchedule) {
-        throw { name: "NOT_FOUND_SCHEDULE" };
-      }
       const result = await Class.findByIdAndUpdate(
-        foundClassAfter,
+        foundClass,
         {
-          classBefore: classBefore,
+          className: classes,
+          semester: semester,
           yearAcademic: yearAcademic,
-          homeTeacher: foundhomeTeacher,
-          schedule: foundSchedule,
         },
         { new: true }
       );

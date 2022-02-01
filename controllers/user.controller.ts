@@ -19,6 +19,7 @@ class users {
       course,
       classes,
       child,
+      father, mother
     } = req.body;
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
@@ -52,7 +53,8 @@ class users {
       const result = await Parent.create({
         email: email.toLowerCase(),
         password: hashedPassword,
-        fullName,
+        father,
+        mother,
         birthDate: new Date(birthDate),
         child,
       });
@@ -79,6 +81,7 @@ class users {
           email: result!.email,
           fullName: result!.fullName,
           role: result!.role,
+          birthDate: result!.birthDate
         },
         "this is a secret key token",
         {
@@ -92,6 +95,7 @@ class users {
           email: result!.email,
           fullName: result!.fullName,
           role: result!.role,
+          birthDate: result!.birthDate
         },
       });
     } else if (role === "Teacher") {
@@ -176,7 +180,8 @@ class users {
         {
           id: result!.id,
           email: result!.email,
-          fullName: result!.fullName,
+          father: result!.father,
+          mother: result!.mother,
           role: result!.role,
         },
         "this is a secret key token",
@@ -189,7 +194,8 @@ class users {
         user: {
           id: result!.id,
           email: result!.email,
-          fullName: result!.fullName,
+          father: result!.father,
+          mother: result!.mother,
           role: result!.role,
         },
       });

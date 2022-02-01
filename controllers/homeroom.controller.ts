@@ -1,35 +1,67 @@
 import { NextFunction, Request, Response } from "express";
 import Class from "../models/Class";
 import Homeroom from "../models/Homeroom";
+import Student from "../models/Students";
 import Teacher from "../models/Teachers";
 
 class homeroomController {
   static async setHomeroom(req: Request, res: Response, next: NextFunction) {
-    const { classes } = req.params;
-    const { homeroom } = req.body;
+    const { homeroomName, className } = req.body;
     try {
-      const foundClass = await Class.findById(classes);
-      if (!foundClass) {
-        throw { name: "NOT_FOUND_CLASS" };
-      }
-      const foundHomeroom = await Teacher.findById(homeroom);
+      const foundHomeroom = await Teacher.findOne({ fullName: homeroomName });
       if (!foundHomeroom) {
         throw { name: "NOT_FOUND_HOMEROOM" };
       }
-      const createHomeroom = await Homeroom.create({});
-      await Class.findByIdAndUpdate(foundClass, {
-        homeTeacher: foundHomeroom,
+      const foundClass = await Class.findOne({ className: className });
+      if (!foundClass) {
+        throw { name: "NOT_FOUND_CLASS" };
+      }
+      const result = await Homeroom.create({
+        homeroomName: foundHomeroom._id,
+        className: foundClass._id,
       });
+      await Class.findByIdAndUpdate(foundClass, {
+        $set: { homeTeacher: result._id },
+      });
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).message);
+      next(error);
+    }
+  }
+
+  static async changeHomeroom(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    const { classBefore, classAfter } = req.body;
+    try {
+      const foundHomeroom = await Homeroom.findById(id);
+      if (!foundHomeroom) {
+        throw { name: "NOT_FOUND_HOMEROOM" };
+      }
+      const findClassBefore = await Class.findOne({ className: classBefore });
+      if (!findClassBefore) {
+        throw { name: "NOT_FOUND_CLASS" };
+      }
+      const findClassAfter = await Class.findOne({ className: classAfter });
+      if (!findClassAfter) {
+        throw { name: "NOT_FOUND_CLASS" };
+      }
       const result = await Homeroom.findByIdAndUpdate(
-        createHomeroom.id,
+        foundHomeroom,
         {
-          homeroomName: foundHomeroom.id,
-          className: foundClass.id,
+          className: findClassAfter._id,
         },
         { new: true }
       );
+      await Class.findByIdAndUpdate(findClassBefore, {
+        $unset: { homeTeacher: "" },
+      });
+      await Class.findByIdAndUpdate(findClassAfter, {
+        $set: { homeTeacher: foundHomeroom },
+      });
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -37,11 +69,42 @@ class homeroomController {
   static async seeHomeroom(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await Homeroom.find()
-        .select("className homeroomName")
-        .populate({ path: "className", select: "className semester" })
-        .populate({ path: "homeroomName", select: "fullName" });
+        .populate({ path: "homeroomName", select: "email fullName" })
+        .populate({
+          path: "className",
+          populate: {
+            path: "student",
+            select: "email fullName score status",
+            populate: { path: "score", populate: { path: "course" } },
+          },
+        });
       res.status(200).json(result);
     } catch (error) {
+      console.log((error as Error).message);
+      next(error);
+    }
+  }
+
+  static async findHomeroom(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    try {
+      const foundHomeroom = await Homeroom.findById(id);
+      if (!foundHomeroom) {
+        throw { name: "NOT_FOUND_HOMEROOM" };
+      }
+      const result = await Homeroom.findById(foundHomeroom)
+        .populate({ path: "homeroomName", select: "email fullName" })
+        .populate({
+          path: "className",
+          populate: {
+            path: "student",
+            select: "email fullName score status",
+            populate: { path: "score", populate: { path: "course" } },
+          },
+        });
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }
@@ -51,61 +114,19 @@ class homeroomController {
     res: Response,
     next: NextFunction
   ) {
-    const { homeroom } = req.params;
+    const { id } = req.params;
     try {
-      const foundHomeroom = await Homeroom.findById(homeroom);
-      if (!foundHomeroom) {
-        throw { name: "NOT_FOUND_HOMEROOM" };
+      const foundStudent = await Student.findById(id);
+      if (!foundStudent) {
+        throw { name: "NOT_FOUND_STUDENT" };
       }
-      const result = await Homeroom.findById(foundHomeroom)
-        .select("className homeroomName")
-        .populate({
-          path: "className",
-          select: "className student",
-          populate: {
-            path: "student",
-            select: "fullName score",
-            populate: {
-              path: "score",
-              select: "course dailyScore midtest finaltest resultScore",
-              populate: { path: "course", model: "course" },
-            },
-          },
-        })
-        .populate({ path: "homeroomName", model: "teacher" });
+      const result = await Student.findById(foundStudent).populate({
+        path: "score",
+        populate: { path: "course" },
+      });
       res.status(200).json(result);
     } catch (error) {
-      next(error);
-    }
-  }
-
-  static async seeScoreByClass(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const { classname } = req.body;
-    try {
-      if (!classname) {
-        throw { name: "NOT_FOUND_CLASSS" };
-      }
-      const result = await Class.find({ className: classname })
-        .select("className student")
-        .populate({
-          path: "className",
-          select: "className student semester",
-        })
-        .populate({
-          path: "student",
-          select: "fullName score",
-          populate: {
-            path: "score",
-            select: "course dailyScore midtest finaltest resultScore",
-            populate: { path: "course" },
-          },
-        });
-      res.status(200).json(result);
-    } catch (error) {
+      console.log((error as Error).message);
       next(error);
     }
   }

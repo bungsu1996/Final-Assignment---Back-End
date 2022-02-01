@@ -53,7 +53,8 @@ class StudentController {
       let mailOption = {
         from: "studentt872@gmail.com",
         to: result.emailSend,
-        subject: "Account Student School For Access Student Data School Sdn Sukamaju",
+        subject:
+          "Account Student School For Access Student Data School Sdn Sukamaju",
         html: `<p>Welcome to ${fullName} in School Sdn Sukamaju<br />Please use this account for login to School Sdn Sukamaju :<br /><b>Email:</b> ${result.email}<br /><b>Password:</b> ${password}</p><br /><b>Dont Tell To Another This Account! Private Account Student</b><br />`,
       };
       transporter.sendMail(mailOption, function (err, info) {
@@ -86,7 +87,7 @@ class StudentController {
       if (!foundStudent) {
         throw { name: "NOT_FOUND_STUDENT" };
       }
-      const result = await Student.findById(foundStudent);
+      const result = await Student.findById(foundStudent).populate("classes");
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).name);
@@ -96,34 +97,35 @@ class StudentController {
 
   static async updateStudent(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { email, password, fullName, birthDate, classes, score } = req.body;
+    const { fullName, birthDate, classBefore, classAfter } = req.body;
     try {
       const foundStudent = await Student.findById(id);
       if (!foundStudent) {
         throw { name: "NOT_FOUND_STUDENT" };
       }
-      const hashPass = bcrypt.genSaltSync(10);
-      const hashedPass = bcrypt.hashSync(password, hashPass);
-      const findClass = await Class.findById({ _id: classes });
-      if (!findClass) {
+      const findClassBefore = await Class.findOne({ className: classBefore });
+      if (!findClassBefore) {
         throw { name: "NOT_FOUND_CLASS" };
       }
-      const findScore = await Score.findById({ _id: score });
-      if (!findScore) {
-        throw { name: "NOT_FOUND_SCORE" };
+      const findClassAfter = await Class.findOne({ className: classAfter });
+      if (!findClassAfter) {
+        throw { name: "NOT_FOUND_CLASS" };
       }
       const result = await Student.findByIdAndUpdate(
         foundStudent,
         {
-          email: email.toLowerCase(),
-          password: hashedPass,
           fullName: fullName,
           birthData: birthDate,
-          classes: findClass,
-          score: score,
+          classes: findClassAfter,
         },
         { new: true }
       );
+      await Class.findByIdAndUpdate(findClassBefore, {
+        $pull: { student: foundStudent._id },
+      });
+      await Class.findByIdAndUpdate(findClassAfter, {
+        $push: { student: foundStudent._id },
+      });
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).name);
@@ -197,8 +199,7 @@ class StudentController {
         let mailOption = {
           from: "studentt872@gmail.com",
           to: foundStudent.email,
-          subject:
-            "Forgot Password. This Code OTP For Verification Account",
+          subject: "Forgot Password. This Code OTP For Verification Account",
           text: `Code OTP: ${otpCode}`,
         };
         transporter.sendMail(mailOption, function (err, info) {
