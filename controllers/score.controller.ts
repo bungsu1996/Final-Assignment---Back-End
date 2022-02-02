@@ -6,23 +6,18 @@ import Student from "../models/Students";
 
 class scoreController {
   static async createScore(req: Request, res: Response, next: NextFunction) {
-    const { student, course, dailyScore, midtest, finaltest, resultScore } =
-      req.body;
+    const { student, course } = req.body;
     try {
-      const foundStudent = await Student.findById({ _id: student })
+      const foundStudent = await Student.findOne({ fullName: student });
       if (!foundStudent) {
-        throw { name: "NOT_FOUND_STUDENT" }
+        throw { name: "NOT_FOUND_STUDENT" };
       }
-      const foundCourse = await Course.findById({ _id: course });
+      const foundCourse = await Course.findOne({ course: course });
       if (!foundCourse) {
         throw { name: "NOT_FOUND_COURSE" };
       }
       const result = await Score.create({
         course: foundCourse,
-        dailyScore: dailyScore,
-        midtest: midtest,
-        finaltest: finaltest,
-        resultScore: resultScore,
       });
       await Student.findByIdAndUpdate(foundStudent, {
         $push: { score: result._id },
@@ -80,6 +75,41 @@ class scoreController {
     }
   }
 
+  static async studentScore(req: Request, res: Response, next: NextFunction) {
+    const { className } = req.body;
+    try {
+      const result = await Class.find({ className: className }).populate({
+        path: "student",
+        select: "fullName status score",
+        populate: {
+          path: "score",
+          select: "course dailyScore midtest finaltest resultScore",
+          populate: { path: "course" },
+        },
+      });
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).message);
+      next(error);
+    }
+  }
+
+  static async spesificScore(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    try {
+      const foundStudent = await Student.findById(id);
+      if (!foundStudent) {
+        throw { name: "NOT_FOUND_STUDENT" };
+      }
+      const result = await Student.findById(foundStudent)
+        .select("fullName email score")
+        .populate({ path: "score", populate: { path: "course" } });
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).message);
+      next(error);
+    }
+  }
 }
 
 export default scoreController;
