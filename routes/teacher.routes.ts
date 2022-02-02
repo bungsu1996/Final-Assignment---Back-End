@@ -9,7 +9,6 @@ class TeacherRoutes {
     this.teacherRoute = Router();
     this.teacher();
     this.teacherControlScore();
-    this.teacherDailyScore();
     this.teacherScoreSpesific();
     this.teacherForgotPassword();
     this.findScoreStudent();
@@ -27,12 +26,9 @@ class TeacherRoutes {
     this.teacherRoute.post("/score/set-score", scoreController.createTestScore);
     this.teacherRoute.get("/score/search-by", TeacherController.searchManageScore);
     this.teacherRoute.put("/score/update-score/:id", TeacherController.updateScore);
+    this.teacherRoute.get("/score/:id", scoreController.spesificScore);
+    this.teacherRoute.put("/score/manageScore/:id", TeacherController.manageAllScore);
   };
-  protected teacherDailyScore = () => {
-    this.teacherRoute.put("/score/set-dailyscore/:score", TeacherController.setDailyScore);
-    this.teacherRoute.put("/score/set-midscore/:score", TeacherController.setMidScore);
-    this.teacherRoute.put("/score/set-finalscore/:score", TeacherController.setFinalScore);
-  }
   protected teacherScoreSpesific = () => {
     this.teacherRoute.get("/score/spesific/:id", TeacherController.getScoreSpecific);
   }
@@ -42,6 +38,7 @@ class TeacherRoutes {
   }
   protected findScoreStudent = () => {
     this.teacherRoute.get("/score/search/:id", TeacherController.findStudentScore);
+    this.teacherRoute.get("/score/student/:id", TeacherController.spesificScore);
   }
   protected getSpesificClass = () => {
     this.teacherRoute.get("/class/:id", TeacherController.getClass);

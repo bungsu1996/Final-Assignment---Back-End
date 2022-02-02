@@ -19,7 +19,8 @@ class users {
       course,
       classes,
       child,
-      father, mother
+      father,
+      mother,
     } = req.body;
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
@@ -81,7 +82,7 @@ class users {
           email: result!.email,
           fullName: result!.fullName,
           role: result!.role,
-          birthDate: result!.birthDate
+          birthDate: result!.birthDate,
         },
         "this is a secret key token",
         {
@@ -95,13 +96,13 @@ class users {
           email: result!.email,
           fullName: result!.fullName,
           role: result!.role,
-          birthDate: result!.birthDate
+          birthDate: result!.birthDate,
         },
       });
     } else if (role === "Teacher") {
       const result = await Teacher.findOne({
         email: email.toLowerCase(),
-      });
+      }).populate("teachClass course");
       if (!result) {
         res.status(404).json({ message: "Account not found" });
       }
@@ -117,6 +118,8 @@ class users {
           fullName: result!.fullName,
           role: result!.role,
           teachClass: result!.teachClass,
+          birthDate: result!.birthDate,
+          course: result!.course
         },
         "this is a secret key token",
         {
@@ -131,6 +134,8 @@ class users {
           fullName: result!.fullName,
           role: result!.role,
           teachClass: result!.teachClass,
+          birthDate: result!.birthDate,
+          course: result!.course
         },
       });
     } else if (role === "Student") {
@@ -231,7 +236,7 @@ class users {
             to: foundTeacher.email,
             subject: "Forgot Password. This Code OTP For Verification Account",
             text: `Code OTP: ${otpCode}`,
-            html: '<p>Click This Link to Change Password<p> <br/ > <a>http://localhost:4200/changePassword</a>'
+            html: "<p>Click This Link to Change Password<p> <br/ > <a>http://localhost:4200/changePassword</a>",
           };
           transporter.sendMail(mailOption, function (err, info) {
             if (err) {

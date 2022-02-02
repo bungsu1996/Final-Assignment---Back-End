@@ -90,10 +90,13 @@ class TeacherController {
   static async findTeacher(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
     try {
-      if (!id) {
+      const foundTeacher = await Teacher.findById(id);
+      if (!foundTeacher) {
         throw { name: "NOT_FOUND_TEACHER" };
       }
-      const result = await Teacher.findById(id).populate("course teachClass");
+      const result = await Teacher.findById(foundTeacher).populate(
+        "course teachClass"
+      );
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).message);
@@ -262,25 +265,24 @@ class TeacherController {
     }
   }
 
-  static async setDailyScore(req: Request, res: Response, next: NextFunction) {
-    const { score } = req.params;
-    const { course, dailyScore } = req.body;
+  static async manageAllScore(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    const { dailyScore, midtest, finaltest } = req.body;
     try {
-      if (dailyScore <= 0 && dailyScore > 100) {
-        throw { name: "RANGE_TEST_SCORE" };
-      }
-      const foundScoreStudent = await Score.findById(score);
-      if (!foundScoreStudent) {
-        throw { name: "NOT_FOUND_SCORE" };
-      }
-      const foundCourse = await Course.findById(course);
-      if (!foundCourse) {
-        throw { name: "NOT_FOUND_COURSE" };
-      }
-      const result = await Score.findByIdAndUpdate(
-        foundScoreStudent,
+      const update: any = await Score.findByIdAndUpdate(
+        id,
         {
           dailyScore: dailyScore,
+          midtest: midtest,
+          finaltest: finaltest,
+        },
+        { new: true }
+      );
+      const reScore = update.dailyScore + update.midtest + update.finaltest / 3;
+      const result = await Score.findByIdAndUpdate(
+        id,
+        {
+          resultScore: reScore,
         },
         { new: true }
       );
@@ -291,57 +293,10 @@ class TeacherController {
     }
   }
 
-  static async setMidScore(req: Request, res: Response, next: NextFunction) {
-    const { score } = req.params;
-    const { course, midscore } = req.body;
+  static async spesificScore(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
     try {
-      if (midscore <= 0 && midscore > 100) {
-        throw { name: "RANGE_TEST_SCORE" };
-      }
-      const foundScoreStudent = await Score.findById(score);
-      if (!foundScoreStudent) {
-        throw { name: "NOT_FOUND_SCORE" };
-      }
-      const foundCourse = await Course.findById(course);
-      if (!foundCourse) {
-        throw { name: "NOT_FOUND_COURSE" };
-      }
-      const result = await Score.findByIdAndUpdate(
-        foundScoreStudent,
-        {
-          midtest: midscore,
-        },
-        { new: true }
-      );
-      res.status(200).json(result);
-    } catch (error) {
-      console.log((error as Error).message);
-      next(error);
-    }
-  }
-
-  static async setFinalScore(req: Request, res: Response, next: NextFunction) {
-    const { score } = req.params;
-    const { course, finalscore } = req.body;
-    try {
-      if (finalscore <= 0 && finalscore > 100) {
-        throw { name: "RANGE_TEST_SCORE" };
-      }
-      const foundScoreStudent = await Score.findById(score);
-      if (!foundScoreStudent) {
-        throw { name: "NOT_FOUND_SCORE" };
-      }
-      const foundCourse = await Course.findById(course);
-      if (!foundCourse) {
-        throw { name: "NOT_FOUND_COURSE" };
-      }
-      const result = await Score.findByIdAndUpdate(
-        foundScoreStudent,
-        {
-          finaltest: finalscore,
-        },
-        { new: true }
-      );
+      const result = await Score.findById(id).populate("course");
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).message);
