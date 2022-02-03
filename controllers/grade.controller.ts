@@ -22,15 +22,15 @@ class GradeController {
     res: Response,
     next: NextFunction
   ) {
-    const { student, grade } = req.body;
+    const { grade, student } = req.body;
     try {
-      const foundStudent = await Student.findOne({ fullName: student });
-      if (!foundStudent) {
-        throw { name: "NOT_FOUND_STUDENT" };
-      }
       const foundGrade = await Grade.findOne({ grade: grade });
       if (!foundGrade) {
         throw { name: "NOT_FOUND" };
+      }
+      const foundStudent = await Student.findOne({ fullName: student });
+      if (!foundStudent) {
+        throw { name: "NOT_FOUND_STUDENT" };
       }
       const result = await Student.findByIdAndUpdate(
         foundStudent,
@@ -68,6 +68,17 @@ class GradeController {
       next(error);
     }
   }
+
+  static async findAllGrade(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await Grade.find();
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).message);
+      next(error);
+    }
+  }
+
   // .populate({
   //   path: "student",
   //   select: "fullName status score grade",

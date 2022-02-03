@@ -492,9 +492,28 @@ class TeacherController {
 
   static async getClass(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    console.log(id);
     try {
-      const result = await Class.findById(id).populate("student");
+      const result = await Class.findById(id).populate({
+        path: "student",
+        populate: { path: "grade" },
+      });
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).name);
+      next(error);
+    }
+  }
+
+  static async getGrade(req: Request, res: Response, next: NextFunction) {
+    const { id } = req.params;
+    try {
+      const foundStudent = await Student.findById(id);
+      if (!foundStudent) {
+        throw { name: "NOT_FOUND_STUDENT" };
+      }
+      const result = await Student.findById(foundStudent)
+        .populate("grade")
+        .populate({ path: "score", populate: { path: "course" } });
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).name);

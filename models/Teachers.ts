@@ -12,6 +12,7 @@ const teacherSchema = new Schema({
     schedule: [{ type: Schema.Types.ObjectId, ref: "calendar" }],
     teachClass: [{ type: Schema.Types.ObjectId, ref: "class" }],
     role: { type: String, default: "Teacher" },
+    homeClass: { type: Schema.Types.ObjectId, ref: "class"}
 });
 
 const Teacher: Model<ITeachers> = model<ITeachers>("teacher", teacherSchema);

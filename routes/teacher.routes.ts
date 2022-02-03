@@ -1,5 +1,6 @@
 import { Router } from "express";
 import coursesController from "../controllers/course.controller";
+import GradeController from "../controllers/grade.controller";
 import scoreController from "../controllers/score.controller";
 import TeacherController from "../controllers/teacher.controller";
 
@@ -39,6 +40,9 @@ class TeacherRoutes {
   protected findScoreStudent = () => {
     this.teacherRoute.get("/score/search/:id", TeacherController.findStudentScore);
     this.teacherRoute.get("/score/student/:id", TeacherController.spesificScore);
+    this.teacherRoute.get("/student/grade/:id", TeacherController.getGrade);
+    this.teacherRoute.post("/student/grade/setGrade", GradeController.setGradeStudent);
+    this.teacherRoute.get("/student/grade", GradeController.findAllGrade);
   }
   protected getSpesificClass = () => {
     this.teacherRoute.get("/class/:id", TeacherController.getClass);

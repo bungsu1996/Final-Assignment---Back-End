@@ -20,6 +20,9 @@ class homeroomController {
         homeroomName: foundHomeroom._id,
         className: foundClass._id,
       });
+      await Teacher.findByIdAndUpdate(foundHomeroom, {
+        $set: { homeClass: result._id },
+      });
       await Class.findByIdAndUpdate(foundClass, {
         $set: { homeTeacher: result._id },
       });
@@ -32,11 +35,15 @@ class homeroomController {
 
   static async changeHomeroom(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { classBefore, classAfter } = req.body;
+    const { homeroomName, classBefore, classAfter } = req.body;
     try {
       const foundHomeroom = await Homeroom.findById(id);
       if (!foundHomeroom) {
         throw { name: "NOT_FOUND_HOMEROOM" };
+      }
+      const foundTeacher = await Teacher.findOne({ fullName: homeroomName });
+      if (!foundTeacher) {
+        throw { name: "NOT_FOUND_TEACHER" };
       }
       const findClassBefore = await Class.findOne({ className: classBefore });
       if (!findClassBefore) {
@@ -53,6 +60,12 @@ class homeroomController {
         },
         { new: true }
       );
+      await Teacher.findByIdAndUpdate(foundTeacher, {
+        $unset: { homeClass: "" },
+      });
+      await Teacher.findByIdAndUpdate(foundTeacher, {
+        $set: { homeClass: findClassAfter },
+      });
       await Class.findByIdAndUpdate(findClassBefore, {
         $unset: { homeTeacher: "" },
       });

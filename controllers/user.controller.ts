@@ -102,7 +102,7 @@ class users {
     } else if (role === "Teacher") {
       const result = await Teacher.findOne({
         email: email.toLowerCase(),
-      }).populate("teachClass course");
+      }).populate("teachClass course homeClass");
       if (!result) {
         res.status(404).json({ message: "Account not found" });
       }
@@ -119,7 +119,8 @@ class users {
           role: result!.role,
           teachClass: result!.teachClass,
           birthDate: result!.birthDate,
-          course: result!.course
+          course: result!.course,
+          homeClass: result!.homeClass
         },
         "this is a secret key token",
         {
@@ -135,7 +136,8 @@ class users {
           role: result!.role,
           teachClass: result!.teachClass,
           birthDate: result!.birthDate,
-          course: result!.course
+          course: result!.course,
+          homeClass: result!.homeClass
         },
       });
     } else if (role === "Student") {
