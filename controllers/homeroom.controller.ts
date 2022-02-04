@@ -63,11 +63,11 @@ class homeroomController {
       await Teacher.findByIdAndUpdate(foundTeacher, {
         $unset: { homeClass: "" },
       });
-      await Teacher.findByIdAndUpdate(foundTeacher, {
-        $set: { homeClass: findClassAfter },
-      });
       await Class.findByIdAndUpdate(findClassBefore, {
         $unset: { homeTeacher: "" },
+      });
+      await Teacher.findByIdAndUpdate(foundTeacher, {
+        $set: { homeClass: findClassAfter },
       });
       await Class.findByIdAndUpdate(findClassAfter, {
         $set: { homeTeacher: foundHomeroom },

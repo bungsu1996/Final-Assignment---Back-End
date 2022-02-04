@@ -10,6 +10,7 @@ class StudentRoutes {
     this.studentScore();
   }
   protected studentControl = () => {
+    this.studentRoute.get("/:id", StudentController.findStudent);
     this.studentRoute.put("/update/:id", StudentController.updateStudent);
   };
   protected studentForgotPass = () => {

@@ -120,7 +120,7 @@ class users {
           teachClass: result!.teachClass,
           birthDate: result!.birthDate,
           course: result!.course,
-          homeClass: result!.homeClass
+          homeClass: result!.homeClass,
         },
         "this is a secret key token",
         {
@@ -137,7 +137,7 @@ class users {
           teachClass: result!.teachClass,
           birthDate: result!.birthDate,
           course: result!.course,
-          homeClass: result!.homeClass
+          homeClass: result!.homeClass,
         },
       });
     } else if (role === "Student") {
@@ -157,6 +157,13 @@ class users {
           email: result!.email,
           fullName: result!.fullName,
           role: result!.role,
+          birthDate: result!.birthDate,
+          status: result!.status,
+          classes: result!.classes,
+          parent: result!.parent,
+          score: result!.score,
+          grade: result!.grade,
+          schedule: result!.schedule,
         },
         "this is a secret key token",
         {
@@ -170,6 +177,13 @@ class users {
           email: result!.email,
           fullName: result!.fullName,
           role: result!.role,
+          birthDate: result!.birthDate,
+          status: result!.status,
+          classes: result!.classes,
+          parent: result!.parent,
+          score: result!.score,
+          grade: result!.grade,
+          schedule: result!.schedule,
         },
       });
     } else if (role === "Parent") {

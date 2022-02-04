@@ -87,7 +87,10 @@ class StudentController {
       if (!foundStudent) {
         throw { name: "NOT_FOUND_STUDENT" };
       }
-      const result = await Student.findById(foundStudent).populate("classes");
+      const result = await Student.findById(foundStudent)
+        .populate({ path: "classes", populate: { path: "homeTeacher" }})
+        .populate("parent")
+        .populate({ path: "score", populate: { path: "course" } });
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).name);

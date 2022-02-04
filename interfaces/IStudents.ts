@@ -18,6 +18,7 @@ interface IStudents {
     parent: IParents;
     role: string;
     grade: IGrade;
+    status: string;
 }
 
 export default IStudents;
