@@ -8,7 +8,7 @@ const classSchema = new Schema(
     semester: { type: String, required: true },
     homeTeacher: { type: Schema.Types.ObjectId, ref: "homeroom" },
     student: [{ type: Schema.Types.ObjectId, ref: "student" }],
-    schedule: [{ type: Schema.Types.ObjectId, ref: "schedule" }],
+    schedule: [{ type: Schema.Types.ObjectId, ref: "calendar" }],
   },
   {
     versionKey: false,

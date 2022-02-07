@@ -251,8 +251,7 @@ class users {
             from: "studentt872@gmail.com",
             to: foundTeacher.email,
             subject: "Forgot Password. This Code OTP For Verification Account",
-            text: `Code OTP: ${otpCode}`,
-            html: "<p>Click This Link to Change Password<p> <br/ > <a>http://localhost:4200/changePassword</a>",
+            html: `<p>Code OTP: ${otpCode}<br />Click This Link to Change Password</p> <br/ > <a href="http://localhost:4200/changePassword">Change New Password</a>`,
           };
           transporter.sendMail(mailOption, function (err, info) {
             if (err) {
@@ -270,7 +269,7 @@ class users {
         }
         res.status(200).json(response);
       } else if (role === "Student") {
-        const foundStudent = await Student.findOne({ email: email });
+        const foundStudent = await Student.findOne({ emailSend: email });
         const response: any = {};
         if (foundStudent) {
           const otpCode = Math.floor(Math.random() * 10000 + 1);
@@ -288,9 +287,9 @@ class users {
           });
           let mailOption = {
             from: "studentt872@gmail.com",
-            to: foundStudent.email,
+            to: foundStudent.emailSend,
             subject: "Forgot Password. This Code OTP For Verification Account",
-            text: `Code OTP: ${otpCode}`,
+            html: `<p>Code OTP: ${otpCode}<br />Click This Link to Change Password</p> <br/ > <a href="http://localhost:4200/changePassword">Change New Password</a>`,
           };
           transporter.sendMail(mailOption, function (err, info) {
             if (err) {
@@ -328,7 +327,7 @@ class users {
             from: "studentt872@gmail.com",
             to: foundParent.email,
             subject: "Forgot Password. This Code OTP For Verification Account",
-            text: `Code OTP: ${otpCode}`,
+            html: `<p>Code OTP: ${otpCode}<br />Click This Link to Change Password</p> <br/ > <a href="http://localhost:4200/changePassword">Change New Password</a>`,
           };
           transporter.sendMail(mailOption, function (err, info) {
             if (err) {
@@ -399,7 +398,7 @@ class users {
             response.statusText = "error";
           } else {
             const foundStudent = await Student.findOneAndUpdate(
-              { email: email },
+              { emailSend: email },
               {
                 password: hashedPass,
               },

@@ -1,4 +1,5 @@
 import { Router } from "express";
+import calendarController from "../controllers/calendar.controller";
 import coursesController from "../controllers/course.controller";
 import GradeController from "../controllers/grade.controller";
 import scoreController from "../controllers/score.controller";
@@ -18,6 +19,7 @@ class TeacherRoutes {
   }
   protected teacher = () => {
     this.teacherRoute.get("/:id", TeacherController.getTeacher);
+    this.teacherRoute.get("/calendar/:id", calendarController.findSchedule);
   }
   protected spesificCourse = () => {
     this.teacherRoute.get("/course/:id", coursesController.findCourse);

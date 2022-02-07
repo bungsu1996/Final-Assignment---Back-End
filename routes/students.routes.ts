@@ -1,4 +1,5 @@
 import { Router } from "express";
+import calendarController from "../controllers/calendar.controller";
 import StudentController from "../controllers/students.controller";
 
 class StudentRoutes {
@@ -8,6 +9,7 @@ class StudentRoutes {
     this.studentControl();
     this.studentForgotPass();
     this.studentScore();
+    this.studentSchedule();
   }
   protected studentControl = () => {
     this.studentRoute.get("/:id", StudentController.findStudent);
@@ -19,6 +21,9 @@ class StudentRoutes {
   }
   protected studentScore = () => {
     this.studentRoute.get("/score/:id", StudentController.seeScore);
+  }
+  protected studentSchedule = () => {
+    this.studentRoute.get("/calendar/:id", calendarController.findSchedule);
   }
 }
 

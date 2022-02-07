@@ -78,7 +78,40 @@ class ParentController {
       if (!foundParent) {
         throw { name: "NOT_FOUND_PARENT" };
       }
-      const result = await Parent.findById(foundParent).populate("student");
+      const result = await Parent.findById(foundParent).populate({
+        path: "student",
+        populate: { path: "classes" },
+      });
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).name);
+      next(error);
+    }
+  }
+  static async findParentStudent(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+    try {
+      const foundParent = await Parent.findById(id);
+      if (!foundParent) {
+        throw { name: "NOT_FOUND_PARENT" };
+      }
+      const result = await Parent.findById(foundParent)
+        .select("student")
+        .populate({
+          path: "student",
+          populate: [
+            {
+              path: "classes",
+              model: "class",
+            },
+            { path: "score", model: "score", populate: { path: "course" } },
+            { path: "grade" },
+          ],
+        });
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).name);
@@ -98,7 +131,7 @@ class ParentController {
       if (!findStudent) {
         throw { name: "NOT_FOUND_STUDENT" };
       }
-      console.log(findStudent)
+      console.log(findStudent);
       const result = await Parent.findByIdAndUpdate(
         foundParent,
         {
