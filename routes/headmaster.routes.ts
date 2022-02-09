@@ -84,6 +84,8 @@ class headmasterRoutes {
     this.headmasterRoute.put("/schedule/:id", scheduleController.updateSchedule);
     this.headmasterRoute.post("/calendar/create", calendarController.addNewSchedule);
     this.headmasterRoute.get("/calendar/:id", calendarController.findSchedule);
+    this.headmasterRoute.get("/calendar", calendarController.findAllSchedule);
+    // this.headmasterRoute.post("/calendar/new", calendarController.validationSchedule);
 
   };
   protected headmasterControlGrade = () => {
