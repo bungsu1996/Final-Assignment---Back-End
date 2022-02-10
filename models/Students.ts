@@ -10,7 +10,7 @@ const studentSchema = new Schema({
   birthDate: { type: String },
   yearAcademic: { type: String, default: "2021/2022" },
   role: { type: String, default: "student" },
-  status: { type: String, default: "active" },
+  status: { type: String, default: "Active" },
   classes: { type: Schema.Types.ObjectId, ref: "class" },
   schedule: [{ type: Schema.Types.ObjectId, ref: "calendar" }],
   score: [{ type: Schema.Types.ObjectId, ref: "score" }],

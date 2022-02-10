@@ -45,7 +45,8 @@ class headmasterRoutes {
     this.headmasterRoute.get("/student", StudentController.findAllStudent);
     this.headmasterRoute.get("/student/:id", StudentController.findStudent);
     this.headmasterRoute.put("/student/:id", StudentController.updateStudent);
-    this.headmasterRoute.put("/student/change-status", StudentController.changeStatusStudent);
+    this.headmasterRoute.put("/student/to-deadactive/:id", StudentController.toDeadActive);
+    this.headmasterRoute.put("/student/to-active/:id", StudentController.toActive);
   };
   protected headmasterControlParent = () => {
     this.headmasterRoute.post("/parent/create", ParentController.createParent);

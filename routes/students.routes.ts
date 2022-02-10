@@ -7,7 +7,6 @@ class StudentRoutes {
   constructor() {
     this.studentRoute = Router();
     this.studentControl();
-    this.studentForgotPass();
     this.studentScore();
     this.studentSchedule();
   }
@@ -15,10 +14,6 @@ class StudentRoutes {
     this.studentRoute.get("/:id", StudentController.findStudent);
     this.studentRoute.put("/update/:id", StudentController.updateStudent);
   };
-  protected studentForgotPass = () => {
-    this.studentRoute.post("/forgot-password", StudentController.forgotPasswordStudent);
-    this.studentRoute.put("/change-password", StudentController.changePasswordStudent);
-  }
   protected studentScore = () => {
     this.studentRoute.get("/score/:id", StudentController.seeScore);
   }

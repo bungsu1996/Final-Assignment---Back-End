@@ -9,7 +9,7 @@ const parentSchema = new Schema({
     mother: { type: String, required: true },
     birthDate: { type: String },
     role: { type: String, default: 'parent' },
-    status: { type: String, default: 'active' },
+    status: { type: String, default: 'Active' },
     student: [{ type: Schema.Types.ObjectId, ref: "student" }],
     class: { type: Schema.Types.ObjectId, ref: "class" },
 });

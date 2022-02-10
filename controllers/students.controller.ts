@@ -136,12 +136,13 @@ class StudentController {
     }
   }
 
-  static async changeStatusStudent(
+  static async toDeadActive(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
-    const { id, status } = req.body;
+    const { id } = req.params;
+    const { toDeadActive } = req.body;
     try {
       const foundStudent = await Student.findById(id);
       if (!foundStudent) {
@@ -150,7 +151,32 @@ class StudentController {
       const result = await Student.findByIdAndUpdate(
         foundStudent,
         {
-          status: status,
+          status: toDeadActive,
+        },
+        { new: true }
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).name);
+      next(error);
+    }
+  }
+  static async toActive(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+    const { toActive } = req.body;
+    try {
+      const foundStudent = await Student.findById(id);
+      if (!foundStudent) {
+        throw { name: "NOT_FOUND_STUDENT" };
+      }
+      const result = await Student.findByIdAndUpdate(
+        foundStudent,
+        {
+          status: toActive,
         },
         { new: true }
       );
@@ -170,95 +196,6 @@ class StudentController {
       }
       const result = await Student.findByIdAndDelete(foundStudent);
       res.status(200).json(result);
-    } catch (error) {
-      console.log((error as Error).name);
-      next(error);
-    }
-  }
-
-  static async forgotPasswordStudent(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const { email } = req.body;
-    try {
-      const foundStudent = await Student.findOne({ email: email });
-      const response: any = {};
-      if (foundStudent) {
-        const otpCode = Math.floor(Math.random() * 10000 + 1);
-        const otpData = new Otp({
-          email: email.toLowerCase(),
-          code: otpCode,
-          expireIn: new Date().getTime() + 300 * 1000,
-        });
-        let transporter = nodemailer.createTransport({
-          service: "Gmail",
-          auth: {
-            user: "studentt872@gmail.com",
-            pass: "Abcd_1234",
-          },
-        });
-        let mailOption = {
-          from: "studentt872@gmail.com",
-          to: foundStudent.email,
-          subject: "Forgot Password. This Code OTP For Verification Account",
-          text: `Code OTP: ${otpCode}`,
-        };
-        transporter.sendMail(mailOption, function (err, info) {
-          if (err) {
-            console.log("Error! Sendemail Failed!", err);
-          } else {
-            console.log("Sendemail Succesfull!", info.response);
-          }
-        });
-        await otpData.save();
-        response.statusText = "succes";
-        response.message = "Please check your email id";
-      } else {
-        response.statusText = "error";
-        response.message = "Email id student does not exists";
-      }
-      res.status(200).json(response);
-    } catch (error) {
-      console.log((error as Error).name);
-      next(error);
-    }
-  }
-
-  static async changePasswordStudent(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const { email, code, password } = req.body;
-    try {
-      const response: any = {};
-      const foundOtp: any = await Otp.find({ email: email, code: code });
-      const hashPass = bcrypt.genSaltSync(10);
-      const hashedPass = bcrypt.hashSync(password, hashPass);
-      if (foundOtp) {
-        let currentTime = new Date().getTime();
-        let diff = foundOtp.expireIn - currentTime;
-        if (diff) {
-          response.message = "Token Expire";
-          response.statusText = "error";
-        } else {
-          const foundStudent = await Student.findOneAndUpdate(
-            { email: email },
-            {
-              password: hashedPass,
-            },
-            { new: true }
-          );
-          response.message = `Change password succesfull. New Password: ${foundStudent}`;
-          response.statusText = "success";
-        }
-      } else {
-        response.message = "Invalid Otp";
-        response.statusText = "error";
-      }
-      res.status(200).json(response);
     } catch (error) {
       console.log((error as Error).name);
       next(error);
