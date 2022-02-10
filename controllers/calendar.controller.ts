@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import Calendar from "../models/calendar";
+import Calendar from "../models/M_Calendar";
 import Class from "../models/Class";
 
 class calendarController {
