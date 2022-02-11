@@ -143,7 +143,7 @@ var users = /** @class */ (function () {
                             fullName: result.fullName,
                             role: result.role,
                             birthDate: result.birthDate,
-                        }, "this is a secret key token", {
+                        }, process.env.JWT_SECRET_KEY, {
                             expiresIn: 86400,
                         });
                         res.status(200).json({

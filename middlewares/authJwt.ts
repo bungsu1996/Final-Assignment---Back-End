@@ -24,7 +24,7 @@ class auth {
       if (!token) {
         throw { name: "MISSING_TOKEN" };
       }
-      const decodedToken = <any>jwt.verify(token,  process.env.JW_SECRET_KEY!);
+      const decodedToken = <any>jwt.verify(token, process.env.JW_SECRET_KEY!);
       req.userId = <any>{ email: decodedToken.email, id: decodedToken.id };
       next();
     } catch (error) {

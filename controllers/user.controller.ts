@@ -7,7 +7,7 @@ import Parent from "../models/Parents";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import Otp from "../models/Otp";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 dotenv.config();
 
 class users {
@@ -86,7 +86,7 @@ class users {
           role: result!.role,
           birthDate: result!.birthDate,
         },
-        "this is a secret key token",
+        process.env.JWT_SECRET_KEY!,
         {
           expiresIn: 86400,
         }
