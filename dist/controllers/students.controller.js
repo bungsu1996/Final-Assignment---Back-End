@@ -43,6 +43,8 @@ var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var Class_1 = __importDefault(require("../models/Class"));
 var Students_1 = __importDefault(require("../models/Students"));
 var nodemailer_1 = __importDefault(require("nodemailer"));
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 var StudentController = /** @class */ (function () {
     function StudentController() {
     }
@@ -100,12 +102,12 @@ var StudentController = /** @class */ (function () {
                         transporter = nodemailer_1.default.createTransport({
                             service: "Gmail",
                             auth: {
-                                user: "studentt872@gmail.com",
-                                pass: "Abcd_1234",
+                                user: process.env.MAILER_USER_EMAIL,
+                                pass: process.env.MAILER_USER_PASSWORD,
                             },
                         });
                         mailOption = {
-                            from: "studentt872@gmail.com",
+                            from: process.env.MAILER_USER_EMAIL,
                             to: result.emailSend,
                             subject: "Account Student School For Access Student Data School Sdn Sukamaju",
                             html: "<p>Welcome to " + fullName + " in School Sdn Sukamaju<br />Please use this account for login to School Sdn Sukamaju :<br /><b>Email:</b> " + result.email + "<br /><b>Password:</b> " + password + "</p><br /><b>Dont Tell To Another This Account! Private Account Student</b><br />",

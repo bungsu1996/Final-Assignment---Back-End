@@ -1,5 +1,7 @@
 import { Application } from "express";
 import app from "./app";
+import dotenv from 'dotenv'
+dotenv.config();
 
 class Server {
   public app: Application;
@@ -10,7 +12,7 @@ class Server {
 
 const server = new Server().app;
 const host = "http://localhost";
-const port = process.env.PORT || 3535;
+const port = process.env.PORT;
 const status = `Server listening on ${host}:${port}`;
 
 server.listen(port, () => {

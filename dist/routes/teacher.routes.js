@@ -31,10 +31,6 @@ var TeacherRoutes = /** @class */ (function () {
         this.teacherScoreSpesific = function () {
             _this.teacherRoute.get("/score/spesific/:id", teacher_controller_1.default.getScoreSpecific);
         };
-        this.teacherForgotPassword = function () {
-            _this.teacherRoute.post("/forgot-password", teacher_controller_1.default.forgotPasswordTeacher);
-            _this.teacherRoute.put("/change-password", teacher_controller_1.default.changePasswordTeacher);
-        };
         this.findScoreStudent = function () {
             _this.teacherRoute.get("/score/search/:id", teacher_controller_1.default.findStudentScore);
             _this.teacherRoute.get("/score/student/:id", teacher_controller_1.default.spesificScore);
@@ -50,7 +46,6 @@ var TeacherRoutes = /** @class */ (function () {
         this.teacher();
         this.teacherControlScore();
         this.teacherScoreSpesific();
-        this.teacherForgotPassword();
         this.findScoreStudent();
         this.getSpesificClass();
         this.spesificCourse();

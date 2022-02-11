@@ -7,7 +7,6 @@ class ParentRoutes {
     this.parentRoute = Router();
     this.parent();
     this.parentScoreStudent();
-    this.parentForgotPassword();
   }
   protected parent = () => {
     this.parentRoute.get("/:id", ParentController.findParent);
@@ -15,10 +14,6 @@ class ParentRoutes {
   }
   protected parentScoreStudent = () => {
     this.parentRoute.get("/score-student/:id", ParentController.seeScoreStudentParent);
-  };
-  protected parentForgotPassword = () => {
-    this.parentRoute.post("/forgot-password", ParentController.forgotPasswordParent);
-    this.parentRoute.put("/change-password", ParentController.changePasswordParent);
   };
 }
 

@@ -6,8 +6,9 @@ import Class from "../models/Class";
 import Course from "../models/Courses";
 import Score from "../models/Score";
 import nodemailer from "nodemailer";
-import Otp from "../models/Otp";
 import Student from "../models/Students";
+import dotenv from 'dotenv'
+dotenv.config();
 
 class TeacherController {
   static async createTeacher(req: Request, res: Response, next: NextFunction) {
@@ -53,12 +54,12 @@ class TeacherController {
       let transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {
-          user: "studentt872@gmail.com",
-          pass: "Abcd_1234",
+          user: process.env.MAILER_USER_EMAIL,
+          pass: process.env.MAILER_USER_PASSWORD,
         },
       });
       let mailOption = {
-        from: "studentt872@gmail.com",
+        from: process.env.MAILER_USER_EMAIL,
         to: result.emailSend,
         subject:
           "Account Teacher School For Access Teacher Data School Sdn Sukamaju",
@@ -397,95 +398,6 @@ class TeacherController {
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).message);
-      next(error);
-    }
-  }
-
-  static async forgotPasswordTeacher(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const { email } = req.body;
-    try {
-      const foundTeacher = await Teacher.findOne({ email: email });
-      const response: any = {};
-      if (foundTeacher) {
-        const otpCode = Math.floor(Math.random() * 10000 + 1);
-        const otpData = new Otp({
-          email: email.toLowerCase(),
-          code: otpCode,
-          expireIn: new Date().getTime() + 300 * 1000,
-        });
-        let transporter = nodemailer.createTransport({
-          service: "Gmail",
-          auth: {
-            user: "studentt872@gmail.com",
-            pass: "Abcd_1234",
-          },
-        });
-        let mailOption = {
-          from: "studentt872@gmail.com",
-          to: foundTeacher.email,
-          subject: "Forgot Password. This Code OTP For Verification Account",
-          text: `Code OTP: ${otpCode}`,
-        };
-        transporter.sendMail(mailOption, function (err, info) {
-          if (err) {
-            console.log("Error! Sendemail Failed!", err);
-          } else {
-            console.log("Sendemail Succesfull!", info.response);
-          }
-        });
-        await otpData.save();
-        response.statusText = "succes";
-        response.message = "Please check your email id";
-      } else {
-        response.statusText = "error";
-        response.message = "Email id teacher does not exists";
-      }
-      res.status(200).json(response);
-    } catch (error) {
-      console.log((error as Error).name);
-      next(error);
-    }
-  }
-
-  static async changePasswordTeacher(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const { email, code, password } = req.body;
-    try {
-      const response: any = {};
-      const foundOtp: any = await Otp.find({ email: email, code: code });
-      const hashPass = bcrypt.genSaltSync(10);
-      const hashedPass = bcrypt.hashSync(password, hashPass);
-      if (foundOtp) {
-        let currentTime = new Date().getTime();
-        let diff = foundOtp.expireIn - currentTime;
-        if (diff) {
-          response.message = "Token Expire";
-          response.statusText = "error";
-        } else {
-          const foundTeacher = await Teacher.findOneAndUpdate(
-            { email: email },
-            {
-              password: hashedPass,
-            },
-            { new: true }
-          );
-          response.message = `Change password succesfull. New Password: ${foundTeacher}`;
-          response.statusText = "success";
-        }
-      } else {
-        response.message = "Invalid Otp";
-        response.statusText = "error";
-      }
-      res.status(200).json(response);
-    } catch (error) {
-      console.log((error as Error).name);
       next(error);
     }
   }

@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import Class from "../models/Class";
 import Student from "../models/Students";
-import Score from "../models/Score";
 import nodemailer from "nodemailer";
-import Otp from "../models/Otp";
+import dotenv from 'dotenv'
+dotenv.config();
 
 class StudentController {
   static async createStudent(req: Request, res: Response, next: NextFunction) {
@@ -46,12 +46,12 @@ class StudentController {
       let transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {
-          user: "studentt872@gmail.com",
-          pass: "Abcd_1234",
+          user: process.env.MAILER_USER_EMAIL,
+          pass: process.env.MAILER_USER_PASSWORD,
         },
       });
       let mailOption = {
-        from: "studentt872@gmail.com",
+        from: process.env.MAILER_USER_EMAIL,
         to: result.emailSend,
         subject:
           "Account Student School For Access Student Data School Sdn Sukamaju",

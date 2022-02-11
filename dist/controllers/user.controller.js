@@ -47,6 +47,8 @@ var Parents_1 = __importDefault(require("../models/Parents"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var nodemailer_1 = __importDefault(require("nodemailer"));
 var Otp_1 = __importDefault(require("../models/Otp"));
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 var users = /** @class */ (function () {
     function users() {
     }
@@ -179,7 +181,7 @@ var users = /** @class */ (function () {
                             birthDate: result.birthDate,
                             course: result.course,
                             homeClass: result.homeClass,
-                        }, "this is a secret key token", {
+                        }, process.env.JWT_SECRET_KEY, {
                             expiresIn: 86400,
                         });
                         res.status(200).json({
@@ -222,7 +224,7 @@ var users = /** @class */ (function () {
                             score: result.score,
                             grade: result.grade,
                             schedule: result.schedule,
-                        }, "this is a secret key token", {
+                        }, process.env.JWT_SECRET_KEY, {
                             expiresIn: 86400,
                         });
                         res.status(200).json({
@@ -262,7 +264,7 @@ var users = /** @class */ (function () {
                             father: result.father,
                             mother: result.mother,
                             role: result.role,
-                        }, "this is a secret key token", {
+                        }, process.env.JWT_SECRET_KEY, {
                             expiresIn: 86400,
                         });
                         res.status(200).json({
@@ -306,12 +308,12 @@ var users = /** @class */ (function () {
                         transporter = nodemailer_1.default.createTransport({
                             service: "Gmail",
                             auth: {
-                                user: "studentt872@gmail.com",
-                                pass: "Abcd_1234",
+                                user: process.env.MAILER_USER_EMAIL,
+                                pass: process.env.MAILER_USER_PASSWORD,
                             },
                         });
                         mailOption = {
-                            from: "studentt872@gmail.com",
+                            from: process.env.MAILER_USER_EMAIL,
                             to: foundTeacher.email,
                             subject: "Forgot Password. This Code OTP For Verification Account",
                             html: "<p>Code OTP: " + otpCode + "<br />Click This Link to Change Password</p> <br/ > <a href=\"http://localhost:4200/changePassword\">Change New Password</a>",
@@ -353,12 +355,12 @@ var users = /** @class */ (function () {
                         transporter = nodemailer_1.default.createTransport({
                             service: "Gmail",
                             auth: {
-                                user: "studentt872@gmail.com",
-                                pass: "Abcd_1234",
+                                user: process.env.MAILER_USER_EMAIL,
+                                pass: process.env.MAILER_USER_PASSWORD,
                             },
                         });
                         mailOption = {
-                            from: "studentt872@gmail.com",
+                            from: process.env.MAILER_USER_EMAIL,
                             to: foundStudent.emailSend,
                             subject: "Forgot Password. This Code OTP For Verification Account",
                             html: "<p>Code OTP: " + otpCode + "<br />Click This Link to Change Password</p> <br/ > <a href=\"http://localhost:4200/changePassword\">Change New Password</a>",
@@ -400,12 +402,12 @@ var users = /** @class */ (function () {
                         transporter = nodemailer_1.default.createTransport({
                             service: "Gmail",
                             auth: {
-                                user: "studentt872@gmail.com",
-                                pass: "Abcd_1234",
+                                user: process.env.MAILER_USER_EMAIL,
+                                pass: process.env.MAILER_USER_PASSWORD,
                             },
                         });
                         mailOption = {
-                            from: "studentt872@gmail.com",
+                            from: process.env.MAILER_USER_EMAIL,
                             to: foundParent.email,
                             subject: "Forgot Password. This Code OTP For Verification Account",
                             html: "<p>Code OTP: " + otpCode + "<br />Click This Link to Change Password</p> <br/ > <a href=\"http://localhost:4200/changePassword\">Change New Password</a>",

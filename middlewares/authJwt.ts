@@ -1,10 +1,11 @@
 import { NextFunction, Response, Request } from "express";
-import jwt, { VerifyErrors } from "jsonwebtoken";
-import { isToken } from "typescript";
+import jwt from "jsonwebtoken";
 import HeadMaster from "../models/HeadMasters";
 import Parent from "../models/Parents";
 import Student from "../models/Students";
 import Teacher from "../models/Teachers";
+import dotenv from "dotenv";
+dotenv.config();
 
 declare global {
   namespace Express {
@@ -18,12 +19,12 @@ class auth {
   static authentication(req: Request, res: Response, next: NextFunction) {
     try {
       // const token = req.headers.authorization?.split(" ")[1];
-      const token = req.header('Authorization')!.replace('Bearer ','');
+      const token = req.header("Authorization")!.replace("Bearer ", "");
       // console.log(token)
       if (!token) {
         throw { name: "MISSING_TOKEN" };
       }
-      const decodedToken = <any>jwt.verify(token, "this is a secret key token");
+      const decodedToken = <any>jwt.verify(token,  process.env.JW_SECRET_KEY!);
       req.userId = <any>{ email: decodedToken.email, id: decodedToken.id };
       next();
     } catch (error) {
@@ -35,14 +36,14 @@ class auth {
     const { userId } = req;
     try {
       const result = await HeadMaster.findById(userId?.id);
-        if (!result) {
-          res.status(401).json({ message: "Require HeadMaster Role!" });
-          return;
-        }
-        next();
+      if (!result) {
+        res.status(401).json({ message: "Require HeadMaster Role!" });
         return;
+      }
+      next();
+      return;
     } catch (error) {
-      res.status(401).json({ Message: "You Are Not Authorized!" })
+      res.status(401).json({ Message: "You Are Not Authorized!" });
     }
   }
 
@@ -50,14 +51,44 @@ class auth {
     const { userId } = req;
     try {
       const result = await Teacher.findById(userId?.id);
-        if (!result) {
-          res.status(401).json({ message: "Require Teacher Role!" });
-          return;
-        }
-        next();
+      if (!result) {
+        res.status(401).json({ message: "Require Teacher Role!" });
         return;
+      }
+      next();
+      return;
     } catch (error) {
-      res.status(401).json({ Message: "You Are Not Authorized!" })
+      res.status(401).json({ Message: "You Are Not Authorized!" });
+    }
+  }
+
+  static async isStudent(req: Request, res: Response, next: NextFunction) {
+    const { userId } = req;
+    try {
+      const result = await Student.findById(userId?.id);
+      if (!result) {
+        res.status(401).json({ message: "Require Student Role!" });
+        return;
+      }
+      next();
+      return;
+    } catch (error) {
+      res.status(401).json({ Message: "You Are Not Authorized!" });
+    }
+  }
+
+  static async isParent(req: Request, res: Response, next: NextFunction) {
+    const { userId } = req;
+    try {
+      const result = await Parent.findById(userId?.id);
+      if (!result) {
+        res.status(401).json({ message: "Require Student Role!" });
+        return;
+      }
+      next();
+      return;
+    } catch (error) {
+      res.status(401).json({ Message: "You Are Not Authorized!" });
     }
   }
 }

@@ -41,19 +41,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var HeadMasters_1 = __importDefault(require("../models/HeadMasters"));
+var Parents_1 = __importDefault(require("../models/Parents"));
+var Students_1 = __importDefault(require("../models/Students"));
 var Teachers_1 = __importDefault(require("../models/Teachers"));
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 var auth = /** @class */ (function () {
     function auth() {
     }
     auth.authentication = function (req, res, next) {
         try {
             // const token = req.headers.authorization?.split(" ")[1];
-            var token = req.header('Authorization').replace('Bearer ', '');
+            var token = req.header("Authorization").replace("Bearer ", "");
             // console.log(token)
             if (!token) {
                 throw { name: "MISSING_TOKEN" };
             }
-            var decodedToken = jsonwebtoken_1.default.verify(token, "this is a secret key token");
+            var decodedToken = jsonwebtoken_1.default.verify(token, process.env.JW_SECRET_KEY);
             req.userId = { email: decodedToken.email, id: decodedToken.id };
             next();
         }
@@ -110,6 +114,62 @@ var auth = /** @class */ (function () {
                         return [2 /*return*/];
                     case 3:
                         error_2 = _a.sent();
+                        res.status(401).json({ Message: "You Are Not Authorized!" });
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    auth.isStudent = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userId, result, error_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        userId = req.userId;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, Students_1.default.findById(userId === null || userId === void 0 ? void 0 : userId.id)];
+                    case 2:
+                        result = _a.sent();
+                        if (!result) {
+                            res.status(401).json({ message: "Require Student Role!" });
+                            return [2 /*return*/];
+                        }
+                        next();
+                        return [2 /*return*/];
+                    case 3:
+                        error_3 = _a.sent();
+                        res.status(401).json({ Message: "You Are Not Authorized!" });
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    auth.isParent = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var userId, result, error_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        userId = req.userId;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, Parents_1.default.findById(userId === null || userId === void 0 ? void 0 : userId.id)];
+                    case 2:
+                        result = _a.sent();
+                        if (!result) {
+                            res.status(401).json({ message: "Require Student Role!" });
+                            return [2 /*return*/];
+                        }
+                        next();
+                        return [2 /*return*/];
+                    case 3:
+                        error_4 = _a.sent();
                         res.status(401).json({ Message: "You Are Not Authorized!" });
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/];

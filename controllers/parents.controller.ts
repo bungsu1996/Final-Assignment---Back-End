@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import Class from "../models/Class";
 import Parent from "../models/Parents";
 import Student from "../models/Students";
 import nodemailer from "nodemailer";
-import Otp from "../models/Otp";
+import dotenv from 'dotenv'
+dotenv.config();
 
 class ParentController {
   static async createParent(req: Request, res: Response, next: NextFunction) {
@@ -33,12 +33,12 @@ class ParentController {
       let transporter = nodemailer.createTransport({
         service: "Gmail",
         auth: {
-          user: "studentt872@gmail.com",
-          pass: "Abcd_1234",
+          user: process.env.MAILER_USER_EMAIL,
+          pass: process.env.MAILER_USER_PASSWORD,
         },
       });
       let mailOption = {
-        from: "studentt872@gmail.com",
+        from: process.env.MAILER_USER_EMAIL,
         to: result.emailSend,
         subject:
           "Account Parent School For Access Parent Data School Sdn Sukamaju",
@@ -182,95 +182,6 @@ class ParentController {
         { new: true }
       );
       res.status(200).json(result);
-    } catch (error) {
-      console.log((error as Error).name);
-      next(error);
-    }
-  }
-
-  static async forgotPasswordParent(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const { email } = req.body;
-    try {
-      const foundParent = await Parent.findOne({ email: email });
-      const response: any = {};
-      if (foundParent) {
-        const otpCode = Math.floor(Math.random() * 10000 + 1);
-        const otpData = new Otp({
-          email: email.toLowerCase(),
-          code: otpCode,
-          expireIn: new Date().getTime() + 300 * 1000,
-        });
-        let transporter = nodemailer.createTransport({
-          service: "Gmail",
-          auth: {
-            user: "studentt872@gmail.com",
-            pass: "Abcd_1234",
-          },
-        });
-        let mailOption = {
-          from: "studentt872@gmail.com",
-          to: foundParent.email,
-          subject: "Forgot Password. This Code OTP For Verification Account",
-          text: `Code OTP: ${otpCode}`,
-        };
-        transporter.sendMail(mailOption, function (err, info) {
-          if (err) {
-            console.log("Error! Sendemail Failed!", err);
-          } else {
-            console.log("Sendemail Succesfull!", info.response);
-          }
-        });
-        await otpData.save();
-        response.statusText = "succes";
-        response.message = "Please check your email id";
-      } else {
-        response.statusText = "error";
-        response.message = "Email id parent does not exists";
-      }
-      res.status(200).json(response);
-    } catch (error) {
-      console.log((error as Error).name);
-      next(error);
-    }
-  }
-
-  static async changePasswordParent(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const { email, code, password } = req.body;
-    try {
-      const response: any = {};
-      const foundOtp: any = await Otp.find({ email: email, code: code });
-      const hashPass = bcrypt.genSaltSync(10);
-      const hashedPass = bcrypt.hashSync(password, hashPass);
-      if (foundOtp) {
-        let currentTime = new Date().getTime();
-        let diff = foundOtp.expireIn - currentTime;
-        if (diff) {
-          response.message = "Token Expire";
-          response.statusText = "error";
-        } else {
-          const foundParent = await Parent.findOneAndUpdate(
-            { email: email },
-            {
-              password: hashedPass,
-            },
-            { new: true }
-          );
-          response.message = `Change password succesfull. New Password: ${foundParent}`;
-          response.statusText = "success";
-        }
-      } else {
-        response.message = "Invalid Otp";
-        response.statusText = "error";
-      }
-      res.status(200).json(response);
     } catch (error) {
       console.log((error as Error).name);
       next(error);

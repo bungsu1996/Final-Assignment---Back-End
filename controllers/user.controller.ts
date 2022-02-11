@@ -7,6 +7,8 @@ import Parent from "../models/Parents";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import Otp from "../models/Otp";
+import dotenv from 'dotenv'
+dotenv.config();
 
 class users {
   static async register(req: Request, res: Response) {
@@ -122,7 +124,7 @@ class users {
           course: result!.course,
           homeClass: result!.homeClass,
         },
-        "this is a secret key token",
+        process.env.JWT_SECRET_KEY!,
         {
           expiresIn: 86400,
         }
@@ -165,7 +167,7 @@ class users {
           grade: result!.grade,
           schedule: result!.schedule,
         },
-        "this is a secret key token",
+        process.env.JWT_SECRET_KEY!,
         {
           expiresIn: 86400,
         }
@@ -205,7 +207,7 @@ class users {
           mother: result!.mother,
           role: result!.role,
         },
-        "this is a secret key token",
+        process.env.JWT_SECRET_KEY!,
         {
           expiresIn: 86400,
         }
@@ -243,12 +245,12 @@ class users {
           let transporter = nodemailer.createTransport({
             service: "Gmail",
             auth: {
-              user: "studentt872@gmail.com",
-              pass: "Abcd_1234",
+              user: process.env.MAILER_USER_EMAIL,
+              pass: process.env.MAILER_USER_PASSWORD,
             },
           });
           let mailOption = {
-            from: "studentt872@gmail.com",
+            from: process.env.MAILER_USER_EMAIL,
             to: foundTeacher.email,
             subject: "Forgot Password. This Code OTP For Verification Account",
             html: `<p>Code OTP: ${otpCode}<br />Click This Link to Change Password</p> <br/ > <a href="http://localhost:4200/changePassword">Change New Password</a>`,
@@ -281,12 +283,12 @@ class users {
           let transporter = nodemailer.createTransport({
             service: "Gmail",
             auth: {
-              user: "studentt872@gmail.com",
-              pass: "Abcd_1234",
+              user: process.env.MAILER_USER_EMAIL,
+              pass: process.env.MAILER_USER_PASSWORD,
             },
           });
           let mailOption = {
-            from: "studentt872@gmail.com",
+            from: process.env.MAILER_USER_EMAIL,
             to: foundStudent.emailSend,
             subject: "Forgot Password. This Code OTP For Verification Account",
             html: `<p>Code OTP: ${otpCode}<br />Click This Link to Change Password</p> <br/ > <a href="http://localhost:4200/changePassword">Change New Password</a>`,
@@ -319,12 +321,12 @@ class users {
           let transporter = nodemailer.createTransport({
             service: "Gmail",
             auth: {
-              user: "studentt872@gmail.com",
-              pass: "Abcd_1234",
+              user: process.env.MAILER_USER_EMAIL,
+              pass: process.env.MAILER_USER_PASSWORD,
             },
           });
           let mailOption = {
-            from: "studentt872@gmail.com",
+            from: process.env.MAILER_USER_EMAIL,
             to: foundParent.email,
             subject: "Forgot Password. This Code OTP For Verification Account",
             html: `<p>Code OTP: ${otpCode}<br />Click This Link to Change Password</p> <br/ > <a href="http://localhost:4200/changePassword">Change New Password</a>`,

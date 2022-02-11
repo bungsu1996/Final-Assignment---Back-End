@@ -43,7 +43,8 @@ var bcryptjs_1 = __importDefault(require("bcryptjs"));
 var Parents_1 = __importDefault(require("../models/Parents"));
 var Students_1 = __importDefault(require("../models/Students"));
 var nodemailer_1 = __importDefault(require("nodemailer"));
-var Otp_1 = __importDefault(require("../models/Otp"));
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 var ParentController = /** @class */ (function () {
     function ParentController() {
     }
@@ -84,12 +85,12 @@ var ParentController = /** @class */ (function () {
                         transporter = nodemailer_1.default.createTransport({
                             service: "Gmail",
                             auth: {
-                                user: "studentt872@gmail.com",
-                                pass: "Abcd_1234",
+                                user: process.env.MAILER_USER_EMAIL,
+                                pass: process.env.MAILER_USER_PASSWORD,
                             },
                         });
                         mailOption = {
-                            from: "studentt872@gmail.com",
+                            from: process.env.MAILER_USER_EMAIL,
                             to: result.emailSend,
                             subject: "Account Parent School For Access Parent Data School Sdn Sukamaju",
                             html: "<p>Welcome to " + father + " in School Sdn Sukamaju<br />Please use this account for login to School Sdn Sukamaju :<br /><b>Email:</b> " + result.email + "<br /><b>Password:</b> " + password + "<br /><b>Student:</b> " + student + "</p><br /><b>Dont Tell To Another This Account! Private Account Student</b><br />",
@@ -325,123 +326,9 @@ var ParentController = /** @class */ (function () {
             });
         });
     };
-    ParentController.forgotPasswordParent = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var email, foundParent, response, otpCode, otpData, transporter, mailOption, error_8;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        email = req.body.email;
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, Parents_1.default.findOne({ email: email })];
-                    case 2:
-                        foundParent = _a.sent();
-                        response = {};
-                        if (!foundParent) return [3 /*break*/, 4];
-                        otpCode = Math.floor(Math.random() * 10000 + 1);
-                        otpData = new Otp_1.default({
-                            email: email.toLowerCase(),
-                            code: otpCode,
-                            expireIn: new Date().getTime() + 300 * 1000,
-                        });
-                        transporter = nodemailer_1.default.createTransport({
-                            service: "Gmail",
-                            auth: {
-                                user: "studentt872@gmail.com",
-                                pass: "Abcd_1234",
-                            },
-                        });
-                        mailOption = {
-                            from: "studentt872@gmail.com",
-                            to: foundParent.email,
-                            subject: "Forgot Password. This Code OTP For Verification Account",
-                            text: "Code OTP: " + otpCode,
-                        };
-                        transporter.sendMail(mailOption, function (err, info) {
-                            if (err) {
-                                console.log("Error! Sendemail Failed!", err);
-                            }
-                            else {
-                                console.log("Sendemail Succesfull!", info.response);
-                            }
-                        });
-                        return [4 /*yield*/, otpData.save()];
-                    case 3:
-                        _a.sent();
-                        response.statusText = "succes";
-                        response.message = "Please check your email id";
-                        return [3 /*break*/, 5];
-                    case 4:
-                        response.statusText = "error";
-                        response.message = "Email id parent does not exists";
-                        _a.label = 5;
-                    case 5:
-                        res.status(200).json(response);
-                        return [3 /*break*/, 7];
-                    case 6:
-                        error_8 = _a.sent();
-                        console.log(error_8.name);
-                        next(error_8);
-                        return [3 /*break*/, 7];
-                    case 7: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ParentController.changePasswordParent = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a, email, code, password, response, foundOtp, hashPass, hashedPass, currentTime, diff, foundParent, error_9;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = req.body, email = _a.email, code = _a.code, password = _a.password;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 8, , 9]);
-                        response = {};
-                        return [4 /*yield*/, Otp_1.default.find({ email: email, code: code })];
-                    case 2:
-                        foundOtp = _b.sent();
-                        hashPass = bcryptjs_1.default.genSaltSync(10);
-                        hashedPass = bcryptjs_1.default.hashSync(password, hashPass);
-                        if (!foundOtp) return [3 /*break*/, 6];
-                        currentTime = new Date().getTime();
-                        diff = foundOtp.expireIn - currentTime;
-                        if (!diff) return [3 /*break*/, 3];
-                        response.message = "Token Expire";
-                        response.statusText = "error";
-                        return [3 /*break*/, 5];
-                    case 3: return [4 /*yield*/, Parents_1.default.findOneAndUpdate({ email: email }, {
-                            password: hashedPass,
-                        }, { new: true })];
-                    case 4:
-                        foundParent = _b.sent();
-                        response.message = "Change password succesfull. New Password: " + foundParent;
-                        response.statusText = "success";
-                        _b.label = 5;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
-                        response.message = "Invalid Otp";
-                        response.statusText = "error";
-                        _b.label = 7;
-                    case 7:
-                        res.status(200).json(response);
-                        return [3 /*break*/, 9];
-                    case 8:
-                        error_9 = _b.sent();
-                        console.log(error_9.name);
-                        next(error_9);
-                        return [3 /*break*/, 9];
-                    case 9: return [2 /*return*/];
-                }
-            });
-        });
-    };
     ParentController.seeScoreStudentParent = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, foundParent, result, error_10;
+            var id, foundParent, result, error_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -471,9 +358,9 @@ var ParentController = /** @class */ (function () {
                         res.status(200).json(result);
                         return [3 /*break*/, 5];
                     case 4:
-                        error_10 = _a.sent();
-                        console.log(error_10.name);
-                        next(error_10);
+                        error_8 = _a.sent();
+                        console.log(error_8.name);
+                        next(error_8);
                         return [3 /*break*/, 5];
                     case 5: return [2 /*return*/];
                 }

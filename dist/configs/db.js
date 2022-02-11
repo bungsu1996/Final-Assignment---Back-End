@@ -40,19 +40,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var mongoose_1 = __importDefault(require("mongoose"));
+var dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 var mongoDB = /** @class */ (function () {
     function mongoDB() {
     }
     var _a;
     _a = mongoDB;
     mongoDB.connect = function () { return __awaiter(void 0, void 0, void 0, function () {
-        var dbName, dbPathUri, err_1;
+        var dbPathUri, err_1;
         return __generator(_a, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 2, , 3]);
-                    dbName = "FinalProject";
-                    dbPathUri = "mongodb://final123:final123@finalproject-shard-00-00.cijwl.mongodb.net:27017,finalproject-shard-00-01.cijwl.mongodb.net:27017,finalproject-shard-00-02.cijwl.mongodb.net:27017/" + dbName + "?ssl=true&replicaSet=atlas-9yfwen-shard-0&authSource=admin&retryWrites=true&w=majority";
+                    dbPathUri = process.env.DB_PATH_URL;
                     return [4 /*yield*/, mongoose_1.default.connect("" + dbPathUri)];
                 case 1:
                     _b.sent();
