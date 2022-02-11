@@ -86,7 +86,7 @@ class users {
           role: result!.role,
           birthDate: result!.birthDate,
         },
-        'this is a secret key',
+        process.env.JW_SECRET_KEY!,
         {
           expiresIn: 86400,
         }
@@ -124,7 +124,7 @@ class users {
           course: result!.course,
           homeClass: result!.homeClass,
         },
-        'this is a secret key',
+        process.env.JW_SECRET_KEY!,
         {
           expiresIn: 86400,
         }
@@ -167,7 +167,7 @@ class users {
           grade: result!.grade,
           schedule: result!.schedule,
         },
-        "this is a secret key",
+        process.env.JW_SECRET_KEY!,
         {
           expiresIn: 86400,
         }
@@ -207,7 +207,7 @@ class users {
           mother: result!.mother,
           role: result!.role,
         },
-        'this is a secret key',
+        process.env.JW_SECRET_KEY!,
         {
           expiresIn: 86400,
         }

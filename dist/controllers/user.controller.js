@@ -143,7 +143,7 @@ var users = /** @class */ (function () {
                             fullName: result.fullName,
                             role: result.role,
                             birthDate: result.birthDate,
-                        }, 'this is a secret key', {
+                        }, process.env.JW_SECRET_KEY, {
                             expiresIn: 86400,
                         });
                         res.status(200).json({
@@ -181,7 +181,7 @@ var users = /** @class */ (function () {
                             birthDate: result.birthDate,
                             course: result.course,
                             homeClass: result.homeClass,
-                        }, 'this is a secret key', {
+                        }, process.env.JW_SECRET_KEY, {
                             expiresIn: 86400,
                         });
                         res.status(200).json({
@@ -224,7 +224,7 @@ var users = /** @class */ (function () {
                             score: result.score,
                             grade: result.grade,
                             schedule: result.schedule,
-                        }, "this is a secret key", {
+                        }, process.env.JW_SECRET_KEY, {
                             expiresIn: 86400,
                         });
                         res.status(200).json({
@@ -264,7 +264,7 @@ var users = /** @class */ (function () {
                             father: result.father,
                             mother: result.mother,
                             role: result.role,
-                        }, 'this is a secret key', {
+                        }, process.env.JW_SECRET_KEY, {
                             expiresIn: 86400,
                         });
                         res.status(200).json({
