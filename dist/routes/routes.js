@@ -42,10 +42,10 @@ var Routes = /** @class */ (function () {
             _this.router.use("/homeroom", homeroom_routes_1.homeroomRouter);
         };
         this.studentRoute = function () {
-            _this.router.use("/student", students_routes_1.studentRouter);
+            _this.router.use("/student", authJwt_1.default.authentication, authJwt_1.default.isStudent, students_routes_1.studentRouter);
         };
         this.parentRoute = function () {
-            _this.router.use("/parent", parents_routes_1.parentRouter);
+            _this.router.use("/parent", authJwt_1.default.authentication, authJwt_1.default.isParent, parents_routes_1.parentRouter);
         };
         this.router = (0, express_1.Router)();
         this.routes();

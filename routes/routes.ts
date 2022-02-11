@@ -48,10 +48,10 @@ class Routes {
     this.router.use("/homeroom", homeroomRouter);
   }
   protected studentRoute = () => {
-    this.router.use("/student", studentRouter);
+    this.router.use("/student", auth.authentication, auth.isStudent,studentRouter);
   };
   protected parentRoute = () => {
-    this.router.use("/parent", parentRouter);
+    this.router.use("/parent", auth.authentication, auth.isParent,parentRouter);
   };
 }
 
