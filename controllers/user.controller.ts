@@ -86,7 +86,7 @@ class users {
           role: result!.role,
           birthDate: result!.birthDate,
         },
-        process.env.JW_SECRET_KEY!,
+        process.env.JWT_SECRET_KEY!,
         {
           expiresIn: 86400,
         }
@@ -124,7 +124,7 @@ class users {
           course: result!.course,
           homeClass: result!.homeClass,
         },
-        process.env.JW_SECRET_KEY!,
+        process.env.JWT_SECRET_KEY!,
         {
           expiresIn: 86400,
         }
@@ -167,7 +167,7 @@ class users {
           grade: result!.grade,
           schedule: result!.schedule,
         },
-        process.env.JW_SECRET_KEY!,
+        process.env.JWT_SECRET_KEY!,
         {
           expiresIn: 86400,
         }
@@ -207,7 +207,7 @@ class users {
           mother: result!.mother,
           role: result!.role,
         },
-        process.env.JW_SECRET_KEY!,
+        process.env.JWT_SECRET_KEY!,
         {
           expiresIn: 86400,
         }
