@@ -57,7 +57,8 @@ var auth = /** @class */ (function () {
             if (!token) {
                 throw { name: "MISSING_TOKEN" };
             }
-            var decodedToken = jsonwebtoken_1.default.verify(token, process.env.JW_SECRET_KEY);
+            // const decodedToken = <any>jwt.verify(token, process.env.JW_SECRET_KEY!);
+            var decodedToken = jsonwebtoken_1.default.verify(token, 'this is a secret key');
             req.userId = { email: decodedToken.email, id: decodedToken.id };
             next();
         }
