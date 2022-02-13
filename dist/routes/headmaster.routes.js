@@ -15,6 +15,7 @@ var schedule_controller_1 = __importDefault(require("../controllers/schedule.con
 var score_controller_1 = __importDefault(require("../controllers/score.controller"));
 var students_controller_1 = __importDefault(require("../controllers/students.controller"));
 var teacher_controller_1 = __importDefault(require("../controllers/teacher.controller"));
+var yearacademic_controller_1 = __importDefault(require("../controllers/yearacademic.controller"));
 var headmasterRoutes = /** @class */ (function () {
     function headmasterRoutes() {
         var _this = this;
@@ -47,7 +48,8 @@ var headmasterRoutes = /** @class */ (function () {
             _this.headmasterRoute.get("/parent", parents_controller_1.default.findAllParent);
             _this.headmasterRoute.get("/parent/:id", parents_controller_1.default.findParent);
             _this.headmasterRoute.put("/parent/:id", parents_controller_1.default.updateParent);
-            _this.headmasterRoute.put("/parent/change-status", parents_controller_1.default.changeStatusParent);
+            _this.headmasterRoute.put("/parent/to-active/:id", parents_controller_1.default.toActive);
+            _this.headmasterRoute.put("/parent/to-deadactive/:id", parents_controller_1.default.toDeadActive);
         };
         this.headmasterControlClasses = function () {
             _this.headmasterRoute.post("/class/create", class_controller_1.default.createClass);
@@ -87,6 +89,11 @@ var headmasterRoutes = /** @class */ (function () {
             _this.headmasterRoute.post("/grade/setToStudent", grade_controller_1.default.setGradeStudent);
             _this.headmasterRoute.post("/grade/getGradeStudent", grade_controller_1.default.getGradeStudent);
         };
+        this.headmasterControlYearAcademic = function () {
+            _this.headmasterRoute.post("/yearAcademic/create", yearacademic_controller_1.default.createYearAcadmeic);
+            _this.headmasterRoute.get("/yearAcademic", yearacademic_controller_1.default.findAllYearAcademic);
+            _this.headmasterRoute.post("/yearAcademic/searching-student", yearacademic_controller_1.default.studentByYear);
+        };
         this.headmasterRoute = (0, express_1.Router)();
         this.headmasterControlTeacher();
         this.headmasterControlHomeroom();
@@ -97,6 +104,7 @@ var headmasterRoutes = /** @class */ (function () {
         this.headmasterControlScore();
         this.headmasterControlSchedule();
         this.headmasterControlGrade();
+        this.headmasterControlYearAcademic();
     }
     return headmasterRoutes;
 }());

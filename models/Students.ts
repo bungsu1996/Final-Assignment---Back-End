@@ -8,13 +8,13 @@ const studentSchema = new Schema({
   password: { type: String, default: "1234abcd" },
   fullName: { type: String },
   birthDate: { type: String },
-  yearAcademic: { type: String, default: "2021/2022" },
+  yearAcademic: { type: String, default: "2022" },
   role: { type: String, default: "student" },
   status: { type: String, default: "Active" },
   classes: { type: Schema.Types.ObjectId, ref: "class" },
   schedule: [{ type: Schema.Types.ObjectId, ref: "calendar" }],
   score: [{ type: Schema.Types.ObjectId, ref: "score" }],
-  parent: [{ type: Schema.Types.ObjectId, ref: "parent" }],
+  parent: { type: Schema.Types.ObjectId, ref: "parent" },
   grade: { type: Schema.Types.ObjectId, ref: "grade" },
 });
 

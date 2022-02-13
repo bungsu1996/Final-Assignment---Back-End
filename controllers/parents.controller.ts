@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import Parent from "../models/Parents";
 import Student from "../models/Students";
 import nodemailer from "nodemailer";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 dotenv.config();
 
 class ParentController {
@@ -121,17 +121,16 @@ class ParentController {
 
   static async updateParent(req: Request, res: Response, next: NextFunction) {
     const { id } = req.params;
-    const { father, mother, birthDate, student } = req.body;
+    const { father, mother, birthDate, addStudent } = req.body;
     try {
       const foundParent = await Parent.findById(id);
       if (!foundParent) {
         throw { name: "NOT_FOUND_PARENT" };
       }
-      const findStudent = await Student.findOne({ fullName: student });
+      const findStudent = await Student.findOne({ fullName: addStudent });
       if (!findStudent) {
         throw { name: "NOT_FOUND_STUDENT" };
       }
-      console.log(findStudent);
       const result = await Parent.findByIdAndUpdate(
         foundParent,
         {
@@ -139,8 +138,11 @@ class ParentController {
           mother: mother,
           birthData: birthDate,
         },
-        { $push: { student: findStudent.id }, new: true }
+        { new: true }
       );
+      await Parent.findByIdAndUpdate(foundParent, {
+        $push: { student: findStudent._id },
+      });
       res.status(200).json(result);
     } catch (error) {
       console.log((error as Error).name);
@@ -163,12 +165,13 @@ class ParentController {
     }
   }
 
-  static async changeStatusParent(
+  static async toActive(
     req: Request,
     res: Response,
     next: NextFunction
   ) {
-    const { id, status } = req.body;
+    const { id } = req.params;
+    const { toActive } = req.body;
     try {
       const foundParent = await Parent.findById(id);
       if (!foundParent) {
@@ -177,7 +180,7 @@ class ParentController {
       const result = await Parent.findByIdAndUpdate(
         foundParent,
         {
-          status: status,
+          status: toActive,
         },
         { new: true }
       );
@@ -187,6 +190,33 @@ class ParentController {
       next(error);
     }
   }
+
+  static async toDeadActive(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { id } = req.params;
+    const { toDeadActive } = req.body;
+    try {
+      const foundParent = await Parent.findById(id);
+      if (!foundParent) {
+        throw { name: "NOT_FOUND_PARENT" };
+      }
+      const result = await Parent.findByIdAndUpdate(
+        foundParent,
+        {
+          status: toDeadActive,
+        },
+        { new: true }
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      console.log((error as Error).name);
+      next(error);
+    }
+  }
+
 
   static async seeScoreStudentParent(
     req: Request,

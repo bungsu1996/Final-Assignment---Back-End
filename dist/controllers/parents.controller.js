@@ -221,43 +221,47 @@ var ParentController = /** @class */ (function () {
     };
     ParentController.updateParent = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, _a, father, mother, birthDate, student, foundParent, findStudent, result, error_5;
+            var id, _a, father, mother, birthDate, addStudent, foundParent, findStudent, result, error_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         id = req.params.id;
-                        _a = req.body, father = _a.father, mother = _a.mother, birthDate = _a.birthDate, student = _a.student;
+                        _a = req.body, father = _a.father, mother = _a.mother, birthDate = _a.birthDate, addStudent = _a.addStudent;
                         _b.label = 1;
                     case 1:
-                        _b.trys.push([1, 5, , 6]);
+                        _b.trys.push([1, 6, , 7]);
                         return [4 /*yield*/, Parents_1.default.findById(id)];
                     case 2:
                         foundParent = _b.sent();
                         if (!foundParent) {
                             throw { name: "NOT_FOUND_PARENT" };
                         }
-                        return [4 /*yield*/, Students_1.default.findOne({ fullName: student })];
+                        return [4 /*yield*/, Students_1.default.findOne({ fullName: addStudent })];
                     case 3:
                         findStudent = _b.sent();
                         if (!findStudent) {
                             throw { name: "NOT_FOUND_STUDENT" };
                         }
-                        console.log(findStudent);
                         return [4 /*yield*/, Parents_1.default.findByIdAndUpdate(foundParent, {
                                 father: father,
                                 mother: mother,
                                 birthData: birthDate,
-                            }, { $push: { student: findStudent.id }, new: true })];
+                            }, { new: true })];
                     case 4:
                         result = _b.sent();
-                        res.status(200).json(result);
-                        return [3 /*break*/, 6];
+                        return [4 /*yield*/, Parents_1.default.findByIdAndUpdate(foundParent, {
+                                $push: { student: findStudent._id },
+                            })];
                     case 5:
+                        _b.sent();
+                        res.status(200).json(result);
+                        return [3 /*break*/, 7];
+                    case 6:
                         error_5 = _b.sent();
                         console.log(error_5.name);
                         next(error_5);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+                        return [3 /*break*/, 7];
+                    case 7: return [2 /*return*/];
                 }
             });
         });
@@ -293,31 +297,32 @@ var ParentController = /** @class */ (function () {
             });
         });
     };
-    ParentController.changeStatusParent = function (req, res, next) {
+    ParentController.toActive = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, id, status, foundParent, result, error_7;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var id, toActive, foundParent, result, error_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
-                        _a = req.body, id = _a.id, status = _a.status;
-                        _b.label = 1;
+                        id = req.params.id;
+                        toActive = req.body.toActive;
+                        _a.label = 1;
                     case 1:
-                        _b.trys.push([1, 4, , 5]);
+                        _a.trys.push([1, 4, , 5]);
                         return [4 /*yield*/, Parents_1.default.findById(id)];
                     case 2:
-                        foundParent = _b.sent();
+                        foundParent = _a.sent();
                         if (!foundParent) {
                             throw { name: "NOT_FOUND_PARENT" };
                         }
                         return [4 /*yield*/, Parents_1.default.findByIdAndUpdate(foundParent, {
-                                status: status,
+                                status: toActive,
                             }, { new: true })];
                     case 3:
-                        result = _b.sent();
+                        result = _a.sent();
                         res.status(200).json(result);
                         return [3 /*break*/, 5];
                     case 4:
-                        error_7 = _b.sent();
+                        error_7 = _a.sent();
                         console.log(error_7.name);
                         next(error_7);
                         return [3 /*break*/, 5];
@@ -326,9 +331,43 @@ var ParentController = /** @class */ (function () {
             });
         });
     };
+    ParentController.toDeadActive = function (req, res, next) {
+        return __awaiter(this, void 0, void 0, function () {
+            var id, toDeadActive, foundParent, result, error_8;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        id = req.params.id;
+                        toDeadActive = req.body.toDeadActive;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 4, , 5]);
+                        return [4 /*yield*/, Parents_1.default.findById(id)];
+                    case 2:
+                        foundParent = _a.sent();
+                        if (!foundParent) {
+                            throw { name: "NOT_FOUND_PARENT" };
+                        }
+                        return [4 /*yield*/, Parents_1.default.findByIdAndUpdate(foundParent, {
+                                status: toDeadActive,
+                            }, { new: true })];
+                    case 3:
+                        result = _a.sent();
+                        res.status(200).json(result);
+                        return [3 /*break*/, 5];
+                    case 4:
+                        error_8 = _a.sent();
+                        console.log(error_8.name);
+                        next(error_8);
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ParentController.seeScoreStudentParent = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, foundParent, result, error_8;
+            var id, foundParent, result, error_9;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -358,9 +397,9 @@ var ParentController = /** @class */ (function () {
                         res.status(200).json(result);
                         return [3 /*break*/, 5];
                     case 4:
-                        error_8 = _a.sent();
-                        console.log(error_8.name);
-                        next(error_8);
+                        error_9 = _a.sent();
+                        console.log(error_9.name);
+                        next(error_9);
                         return [3 /*break*/, 5];
                     case 5: return [2 /*return*/];
                 }

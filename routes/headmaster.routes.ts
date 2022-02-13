@@ -9,6 +9,7 @@ import scheduleController from "../controllers/schedule.controller";
 import scoreController from "../controllers/score.controller";
 import StudentController from "../controllers/students.controller";
 import TeacherController from "../controllers/teacher.controller";
+import yearAcademicController from "../controllers/yearacademic.controller";
 
 class headmasterRoutes {
   public headmasterRoute: Router;
@@ -23,6 +24,7 @@ class headmasterRoutes {
     this.headmasterControlScore();
     this.headmasterControlSchedule();
     this.headmasterControlGrade();
+    this.headmasterControlYearAcademic();
   }
   protected headmasterSelf = () => {};
   protected headmasterControlTeacher = () => {
@@ -53,7 +55,8 @@ class headmasterRoutes {
     this.headmasterRoute.get("/parent", ParentController.findAllParent);
     this.headmasterRoute.get("/parent/:id", ParentController.findParent);
     this.headmasterRoute.put("/parent/:id", ParentController.updateParent);
-    this.headmasterRoute.put("/parent/change-status", ParentController.changeStatusParent);
+    this.headmasterRoute.put("/parent/to-active/:id", ParentController.toActive);
+    this.headmasterRoute.put("/parent/to-deadactive/:id", ParentController.toDeadActive);
   };
   protected headmasterControlClasses = () => {
     this.headmasterRoute.post("/class/create", ClassConttroller.createClass);
@@ -93,6 +96,11 @@ class headmasterRoutes {
     this.headmasterRoute.post("/grade/create", GradeController.createGrade);
     this.headmasterRoute.post("/grade/setToStudent", GradeController.setGradeStudent);
     this.headmasterRoute.post("/grade/getGradeStudent", GradeController.getGradeStudent);
+  };
+  protected headmasterControlYearAcademic = () => {
+    this.headmasterRoute.post("/yearAcademic/create", yearAcademicController.createYearAcadmeic);
+    this.headmasterRoute.get("/yearAcademic", yearAcademicController.findAllYearAcademic);
+    this.headmasterRoute.post("/yearAcademic/searching-student", yearAcademicController.studentByYear);
   };
 }
 

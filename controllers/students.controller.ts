@@ -161,6 +161,7 @@ class StudentController {
       next(error);
     }
   }
+  
   static async toActive(
     req: Request,
     res: Response,
