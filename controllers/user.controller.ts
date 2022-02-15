@@ -88,11 +88,12 @@ class users {
         },
         process.env.JWT_SECRET_KEY!,
         {
-          expiresIn: 86400,
+          expiresIn: "3h",
         }
       );
       res.status(200).json({
         token: token,
+        expiresIn: 10800,
         user: {
           id: result!.id,
           email: result!.email,
@@ -126,11 +127,12 @@ class users {
         },
         process.env.JWT_SECRET_KEY!,
         {
-          expiresIn: 86400,
+          expiresIn: "3h",
         }
       );
       res.status(200).json({
         token: token,
+        expiresIn: 10800,
         user: {
           id: result!.id,
           email: result!.email,
@@ -169,11 +171,12 @@ class users {
         },
         process.env.JWT_SECRET_KEY!,
         {
-          expiresIn: 86400,
+          expiresIn: "3h",
         }
       );
       res.status(200).json({
         token: token,
+        expiresIn: 10800,
         user: {
           id: result!.id,
           email: result!.email,
@@ -209,11 +212,12 @@ class users {
         },
         process.env.JWT_SECRET_KEY!,
         {
-          expiresIn: 86400,
+          expiresIn: "3h",
         }
       );
       res.status(200).json({
         token: token,
+        expiresIn: 10800,
         user: {
           id: result!.id,
           email: result!.email,

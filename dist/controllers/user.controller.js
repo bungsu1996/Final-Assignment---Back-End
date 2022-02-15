@@ -144,10 +144,11 @@ var users = /** @class */ (function () {
                             role: result.role,
                             birthDate: result.birthDate,
                         }, process.env.JWT_SECRET_KEY, {
-                            expiresIn: 86400,
+                            expiresIn: "3h",
                         });
                         res.status(200).json({
                             token: token,
+                            expiresIn: 10800,
                             user: {
                                 id: result.id,
                                 email: result.email,
@@ -182,10 +183,11 @@ var users = /** @class */ (function () {
                             course: result.course,
                             homeClass: result.homeClass,
                         }, process.env.JWT_SECRET_KEY, {
-                            expiresIn: 86400,
+                            expiresIn: "3h",
                         });
                         res.status(200).json({
                             token: token,
+                            expiresIn: 10800,
                             user: {
                                 id: result.id,
                                 email: result.email,
@@ -225,10 +227,11 @@ var users = /** @class */ (function () {
                             grade: result.grade,
                             schedule: result.schedule,
                         }, process.env.JWT_SECRET_KEY, {
-                            expiresIn: 86400,
+                            expiresIn: "3h",
                         });
                         res.status(200).json({
                             token: token,
+                            expiresIn: 10800,
                             user: {
                                 id: result.id,
                                 email: result.email,
@@ -265,10 +268,11 @@ var users = /** @class */ (function () {
                             mother: result.mother,
                             role: result.role,
                         }, process.env.JWT_SECRET_KEY, {
-                            expiresIn: 86400,
+                            expiresIn: "3h",
                         });
                         res.status(200).json({
                             token: token,
+                            expiresIn: 10800,
                             user: {
                                 id: result.id,
                                 email: result.email,
